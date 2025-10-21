@@ -9,6 +9,7 @@ class ItemBacklog
     private int $prioridade;
     private int $estimativa;
     private string $status; // Para Fazer, Em Andamento, Concluido
+    private ?Projeto $projeto = null;
 
     public function criarItem(): void
     {
@@ -20,6 +21,19 @@ class ItemBacklog
 
     public function definirPrioridade(): void
     {
+    }
+
+    public function definirProjeto(Projeto $projeto): void
+    {
+        $this->projeto = $projeto;
+        if (method_exists($projeto, 'getItensBacklog') && !in_array($this, $projeto->getItensBacklog(), true)) {
+            $projeto->adicionarItemBacklog($this);
+        }
+    }
+
+    public function getProjeto(): ?Projeto
+    {
+        return $this->projeto;
     }
 }
 
