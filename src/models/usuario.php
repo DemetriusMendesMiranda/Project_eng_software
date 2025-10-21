@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-final class Usuario
+class Usuario
 {
     private int $idUsuario;
     private string $nome;
