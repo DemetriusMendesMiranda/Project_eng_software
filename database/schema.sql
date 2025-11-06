@@ -112,10 +112,10 @@ CREATE TABLE tarefas (
     estimativa_horas INT,
     item_backlog_id INT NOT NULL,
     membro_dev_id INT NULL,
-    CONSTRAINT fk_tarefa_md
-        FOREIGN KEY (membro_dev_id)
-        REFERENCES membros_dev(usuario_id)
-        ON DELETE SET NULL
+    CONSTRAINT fk_tarefa_ib
+        FOREIGN KEY (item_backlog_id)
+        REFERENCES itens_backlog(id)
+        ON DELETE CASCADE,
     CONSTRAINT fk_tarefa_md
         FOREIGN KEY (membro_dev_id)
         REFERENCES membros_dev(usuario_id)
