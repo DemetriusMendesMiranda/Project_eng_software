@@ -1,0 +1,26 @@
+previews:
+  generation: automatic
+  # Optional: automatically expire preview envs after N days without new commits
+  # expireAfterDays: 7
+
+services:
+  - type: web
+    name: project-eng-software
+    plan: starter
+    env: docker
+    dockerfilePath: ./Dockerfile
+    # Optional: specify context if not repo root
+    dockerContext: .
+    autoDeploy: true
+    # Health check for the root path
+    healthCheckPath: /
+    # Use smaller instances and a single instance for previews
+    previews:
+      plan: starter
+      numInstances: 1
+    # Add env vars here if needed; you can set different values for previews with previewValue
+    # envVars:
+    #   - key: APP_ENV
+    #     value: production
+    #     previewValue: preview
+
