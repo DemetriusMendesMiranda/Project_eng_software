@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -27,6 +27,9 @@ export default function TeamsPage() {
   const updateTeam = useStore((state) => state.updateTeam)
   const addTeamMember = useStore((state) => state.addTeamMember)
   const removeTeamMember = useStore((state) => state.removeTeamMember)
+  const fetchTeams = useStore((state) => state.fetchTeams)
+  const fetchUsers = useStore((state) => state.fetchUsers)
+  const fetchProjects = useStore((state) => state.fetchProjects)
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -39,6 +42,10 @@ export default function TeamsPage() {
     name: "",
     projectId: 0,
   })
+
+  useEffect(() => {
+    void Promise.all([fetchTeams(), fetchUsers(), fetchProjects()])
+  }, [fetchTeams, fetchUsers, fetchProjects])
 
   const handleAdd = () => {
     addTeam({ ...formData, memberIds: [] })

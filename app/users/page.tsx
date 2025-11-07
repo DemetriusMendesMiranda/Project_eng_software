@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -26,6 +26,7 @@ export default function UsersPage() {
   const addUser = useStore((state) => state.addUser)
   const updateUser = useStore((state) => state.updateUser)
   const deleteUser = useStore((state) => state.deleteUser)
+  const fetchUsers = useStore((state) => state.fetchUsers)
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -37,6 +38,10 @@ export default function UsersPage() {
     passwordHash: "",
     role: "Developer" as UserRole,
   })
+
+  useEffect(() => {
+    void fetchUsers()
+  }, [fetchUsers])
 
   const handleAdd = () => {
     addUser(formData)

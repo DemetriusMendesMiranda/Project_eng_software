@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -26,6 +26,7 @@ export default function ProjectsPage() {
   const addProject = useStore((state) => state.addProject)
   const updateProject = useStore((state) => state.updateProject)
   const archiveProject = useStore((state) => state.archiveProject)
+  const fetchProjects = useStore((state) => state.fetchProjects)
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -37,6 +38,10 @@ export default function ProjectsPage() {
     startDate: "",
     expectedEndDate: "",
   })
+
+  useEffect(() => {
+    void fetchProjects()
+  }, [fetchProjects])
 
   const handleAdd = () => {
     addProject({ ...formData, archived: false })

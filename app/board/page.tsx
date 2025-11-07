@@ -4,13 +4,21 @@ import { KanbanBoard } from "@/components/kanban-board"
 import { useStore } from "@/lib/store"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export default function BoardPage() {
   const projects = useStore((state) => state.projects)
   const sprints = useStore((state) => state.sprints)
+  const fetchProjects = useStore((state) => state.fetchProjects)
+  const fetchSprints = useStore((state) => state.fetchSprints)
+  const fetchBacklogItems = useStore((state) => state.fetchBacklogItems)
+  const fetchUsers = useStore((state) => state.fetchUsers)
   const [selectedProject, setSelectedProject] = useState<number | null>(null)
   const [selectedSprint, setSelectedSprint] = useState<number | null>(null)
+
+  useEffect(() => {
+    void Promise.all([fetchProjects(), fetchSprints(), fetchBacklogItems(), fetchUsers()])
+  }, [fetchProjects, fetchSprints, fetchBacklogItems, fetchUsers])
 
   return (
     <div className="p-8 h-screen flex flex-col">

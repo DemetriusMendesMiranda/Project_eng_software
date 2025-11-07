@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -29,6 +29,9 @@ export default function MeetingsPage() {
   const addMeeting = useStore((state) => state.addMeeting)
   const updateMeeting = useStore((state) => state.updateMeeting)
   const deleteMeeting = useStore((state) => state.deleteMeeting)
+  const fetchMeetings = useStore((state) => state.fetchMeetings)
+  const fetchTeams = useStore((state) => state.fetchTeams)
+  const fetchUsers = useStore((state) => state.fetchUsers)
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -43,6 +46,10 @@ export default function MeetingsPage() {
     attendeeIds: [] as number[],
     notes: "",
   })
+
+  useEffect(() => {
+    void Promise.all([fetchMeetings(), fetchTeams(), fetchUsers()])
+  }, [fetchMeetings, fetchTeams, fetchUsers])
 
   const handleAdd = () => {
     addMeeting(formData)

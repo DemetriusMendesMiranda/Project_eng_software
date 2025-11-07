@@ -8,7 +8,7 @@ export interface User {
   id: number
   name: string
   email: string
-  passwordHash: string
+  passwordHash?: string
   role: UserRole
   avatar?: string
 }

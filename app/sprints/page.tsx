@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -27,6 +27,9 @@ export default function SprintsPage() {
   const teams = useStore((state) => state.teams)
   const addSprint = useStore((state) => state.addSprint)
   const updateSprint = useStore((state) => state.updateSprint)
+  const fetchSprints = useStore((state) => state.fetchSprints)
+  const fetchProjects = useStore((state) => state.fetchProjects)
+  const fetchTeams = useStore((state) => state.fetchTeams)
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -41,6 +44,10 @@ export default function SprintsPage() {
     projectId: 0,
     teamId: 0,
   })
+
+  useEffect(() => {
+    void Promise.all([fetchSprints(), fetchProjects(), fetchTeams()])
+  }, [fetchSprints, fetchProjects, fetchTeams])
 
   const handleAdd = () => {
     addSprint(formData)

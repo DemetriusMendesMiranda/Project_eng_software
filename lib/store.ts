@@ -1,8 +1,10 @@
 import { create } from "zustand"
 import type { User, Project, Team, Sprint, ItemBacklog, Task, Meeting, Comment } from "./types"
+import { api } from "./api"
 
 interface AppState {
   currentUser: User | null
+  authToken?: string
   users: User[]
   projects: Project[]
   teams: Team[]
@@ -15,6 +17,15 @@ interface AppState {
   login: (email: string, password: string) => Promise<boolean>
   logout: () => void
   setCurrentUser: (user: User | null) => void
+
+  // Fetch actions
+  fetchUsers: () => Promise<void>
+  fetchProjects: () => Promise<void>
+  fetchTeams: () => Promise<void>
+  fetchSprints: () => Promise<void>
+  fetchBacklogItems: () => Promise<void>
+  fetchTasks: () => Promise<void>
+  fetchMeetings: () => Promise<void>
 
   // User actions
   addUser: (user: Omit<User, "id">) => void
@@ -52,188 +63,81 @@ interface AppState {
   deleteMeeting: (id: number) => void
 }
 
-// Mock data
-const mockUsers: User[] = [
-  {
-    id: 1,
-    name: "Admin User",
-    email: "admin@scrum.com",
-    passwordHash: "admin123",
-    role: "SuperAdmin",
-  },
-  {
-    id: 2,
-    name: "John Smith",
-    email: "john@scrum.com",
-    passwordHash: "scrum123",
-    role: "ScrumMaster",
-  },
-  {
-    id: 3,
-    name: "Sarah Johnson",
-    email: "sarah@scrum.com",
-    passwordHash: "product123",
-    role: "ProductOwner",
-  },
-  {
-    id: 4,
-    name: "Mike Chen",
-    email: "mike@scrum.com",
-    passwordHash: "dev123",
-    role: "Developer",
-  },
-  {
-    id: 5,
-    name: "Emily Davis",
-    email: "emily@scrum.com",
-    passwordHash: "dev123",
-    role: "Developer",
-  },
-]
-
-const mockProjects: Project[] = [
-  {
-    id: 1,
-    name: "E-Commerce Platform",
-    description: "Building a modern e-commerce platform with React and Node.js",
-    startDate: "2025-01-01",
-    expectedEndDate: "2025-06-30",
-    archived: false,
-  },
-  {
-    id: 2,
-    name: "Mobile App Development",
-    description: "Cross-platform mobile application for iOS and Android",
-    startDate: "2025-02-01",
-    expectedEndDate: "2025-08-31",
-    archived: false,
-  },
-]
-
-const mockTeams: Team[] = [
-  {
-    id: 1,
-    name: "Alpha Team",
-    projectId: 1,
-    memberIds: [2, 4, 5],
-  },
-]
-
-const mockSprints: Sprint[] = [
-  {
-    id: 1,
-    name: "Sprint 1",
-    goal: "Setup project infrastructure and authentication",
-    startDate: "2025-01-01",
-    endDate: "2025-01-14",
-    status: "Active",
-    projectId: 1,
-    teamId: 1,
-  },
-]
-
-const mockBacklogItems: ItemBacklog[] = [
-  {
-    id: 1,
-    title: "User Authentication",
-    description: "Implement user login and registration",
-    priority: 1,
-    estimation: 8,
-    status: "InProgress",
-    projectId: 1,
-    sprintId: 1,
-    assignedToId: 4,
-    comments: [],
-  },
-  {
-    id: 2,
-    title: "Product Catalog",
-    description: "Create product listing and detail pages",
-    priority: 2,
-    estimation: 13,
-    status: "ToDo",
-    projectId: 1,
-    sprintId: 1,
-    comments: [],
-  },
-  {
-    id: 3,
-    title: "Shopping Cart",
-    description: "Implement shopping cart functionality",
-    priority: 3,
-    estimation: 8,
-    status: "ToDo",
-    projectId: 1,
-    comments: [],
-  },
-]
-
-const mockTasks: Task[] = [
-  {
-    id: 1,
-    description: "Setup authentication API",
-    points: 5,
-    status: "Done",
-    itemBacklogId: 1,
-    assignedToId: 4,
-  },
-  {
-    id: 2,
-    description: "Create login UI",
-    points: 3,
-    status: "InProgress",
-    itemBacklogId: 1,
-    assignedToId: 4,
-  },
-]
-
-const mockMeetings: Meeting[] = [
-  {
-    id: 1,
-    title: "Sprint Planning",
-    type: "Sprint Planning",
-    date: "2025-01-01T09:00:00",
-    duration: 120,
-    teamId: 1,
-    attendeeIds: [2, 3, 4, 5],
-  },
-  {
-    id: 2,
-    title: "Daily Standup",
-    type: "Daily Standup",
-    date: "2025-01-06T09:00:00",
-    duration: 15,
-    teamId: 1,
-    attendeeIds: [2, 4, 5],
-  },
-]
-
 export const useStore = create<AppState>((set, get) => ({
   currentUser: null,
-  users: mockUsers,
-  projects: mockProjects,
-  teams: mockTeams,
-  sprints: mockSprints,
-  backlogItems: mockBacklogItems,
-  tasks: mockTasks,
-  meetings: mockMeetings,
+  authToken: undefined,
+  users: [],
+  projects: [],
+  teams: [] ,
+  sprints: [],
+  backlogItems: [],
+  tasks: [],
+  meetings: [],
 
   // Auth actions
   login: async (email: string, password: string) => {
-    const user = get().users.find((u) => u.email === email && u.passwordHash === password)
-    if (user) {
-      set({ currentUser: user })
+    try {
+      const { token, user } = await api.login(email, password)
+      const mappedUser: User = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: (user as any).role || "Developer",
+      }
+      set({ currentUser: mappedUser, authToken: token })
+      if (typeof window !== "undefined") {
+        localStorage.setItem("authToken", token)
+        localStorage.setItem("currentUser", JSON.stringify(mappedUser))
+      }
       return true
+    } catch {
+      return false
     }
-    return false
   },
 
-  logout: () => set({ currentUser: null }),
+  logout: () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("authToken")
+      localStorage.removeItem("currentUser")
+    }
+    set({ currentUser: null, authToken: undefined })
+  },
 
   setCurrentUser: (user) => set({ currentUser: user }),
 
+  // Fetch actions
+  fetchUsers: async () => {
+    const users = (await api.getUsers()) as unknown as User[]
+    set({ users })
+  },
+  fetchProjects: async () => {
+    const projects = (await api.getProjects()) as unknown as Project[]
+    set({ projects })
+  },
+  fetchTeams: async () => {
+    const teams = (await api.getTeams()) as unknown as Team[]
+    set({ teams })
+  },
+  fetchSprints: async () => {
+    const sprints = (await api.getSprints()) as unknown as Sprint[]
+    set({ sprints })
+  },
+  fetchBacklogItems: async () => {
+    const backlogItems = (await api.getBacklogItems()) as unknown as ItemBacklog[]
+    set({ backlogItems })
+  },
+  fetchTasks: async () => {
+    const tasks = (await api.getTasks()) as unknown as Task[]
+    set({ tasks })
+  },
+  fetchMeetings: async () => {
+    const meetings = (await api.getMeetings()) as unknown as Meeting[]
+    set({ meetings })
+  },
+
   // User actions
   addUser: (user) => {
+    // Defer to backend integration when endpoint is available
     const newUser = { ...user, id: Date.now() }
     set((state) => ({ users: [...state.users, newUser] }))
   },
@@ -249,18 +153,20 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   // Project actions
-  addProject: (project) => {
-    const newProject = { ...project, id: Date.now() }
-    set((state) => ({ projects: [...state.projects, newProject] }))
+  addProject: async (project) => {
+    const created = (await api.createProject(project)) as unknown as Project
+    set((state) => ({ projects: [...state.projects, created] }))
   },
 
-  updateProject: (id, updates) => {
+  updateProject: async (id, updates) => {
+    const updated = (await api.updateProject(id, updates)) as unknown as Project
     set((state) => ({
-      projects: state.projects.map((p) => (p.id === id ? { ...p, ...updates } : p)),
+      projects: state.projects.map((p) => (p.id === id ? { ...p, ...updated } : p)),
     }))
   },
 
-  archiveProject: (id) => {
+  archiveProject: async (id) => {
+    await api.archiveProject(id)
     set((state) => ({
       projects: state.projects.map((p) => (p.id === id ? { ...p, archived: true } : p)),
     }))
@@ -305,25 +211,30 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   // Backlog actions
-  addBacklogItem: (item) => {
-    const newItem = { ...item, id: Date.now(), comments: [] }
+  addBacklogItem: async (item) => {
+    const created = (await api.createBacklogItem(item)) as unknown as ItemBacklog
+    // Ensure comments array exists
+    const newItem = { comments: [], ...created } as ItemBacklog
     set((state) => ({ backlogItems: [...state.backlogItems, newItem] }))
   },
 
-  updateBacklogItem: (id, updates) => {
+  updateBacklogItem: async (id, updates) => {
+    const updated = (await api.updateBacklogItem(id, updates)) as unknown as ItemBacklog
     set((state) => ({
-      backlogItems: state.backlogItems.map((item) => (item.id === id ? { ...item, ...updates } : item)),
+      backlogItems: state.backlogItems.map((item) => (item.id === id ? { ...item, ...updated } : item)),
     }))
   },
 
-  deleteBacklogItem: (id) => {
+  deleteBacklogItem: async (id) => {
+    await api.deleteBacklogItem(id)
     set((state) => ({
       backlogItems: state.backlogItems.filter((item) => item.id !== id),
     }))
   },
 
-  addComment: (itemId, comment) => {
-    const newComment = { ...comment, id: Date.now() }
+  addComment: async (itemId, comment) => {
+    const created = (await api.addComment(itemId, comment)) as unknown as Comment
+    const newComment = created?.id ? created : { ...comment, id: Date.now() }
     set((state) => ({
       backlogItems: state.backlogItems.map((item) =>
         item.id === itemId ? { ...item, comments: [...item.comments, newComment] } : item,

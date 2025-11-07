@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -31,6 +31,10 @@ export default function BacklogPage() {
   const deleteBacklogItem = useStore((state) => state.deleteBacklogItem)
   const addComment = useStore((state) => state.addComment)
   const currentUser = useStore((state) => state.currentUser)
+  const fetchBacklogItems = useStore((state) => state.fetchBacklogItems)
+  const fetchProjects = useStore((state) => state.fetchProjects)
+  const fetchSprints = useStore((state) => state.fetchSprints)
+  const fetchUsers = useStore((state) => state.fetchUsers)
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -49,6 +53,15 @@ export default function BacklogPage() {
     sprintId: undefined as number | undefined,
     assignedToId: undefined as number | undefined,
   })
+
+  useEffect(() => {
+    void Promise.all([
+      fetchBacklogItems(),
+      fetchProjects(),
+      fetchSprints(),
+      fetchUsers(),
+    ])
+  }, [fetchBacklogItems, fetchProjects, fetchSprints, fetchUsers])
 
   const handleAdd = () => {
     addBacklogItem(formData)

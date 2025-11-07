@@ -122,3 +122,28 @@ Abra `http://localhost:8000/` no navegador. A página mostrará a data/hora e o 
 - Banco desconhecido: crie o DB (`CREATE DATABASE scrum_db ...`).
 - Use `DB_HOST=127.0.0.1` (não `localhost`) para forçar conexão TCP no PDO.
 
+## Frontend (Next.js)
+
+O frontend (pasta `app/` e componentes React) espera consumir uma API PHP via HTTP.
+
+1) Configure a URL base da API no ambiente do Next.js:
+
+macOS/Linux (bash/zsh):
+```bash
+export NEXT_PUBLIC_API_BASE_URL="http://localhost:8000"  # URL do servidor PHP
+```
+
+Windows (PowerShell):
+```powershell
+$env:NEXT_PUBLIC_API_BASE_URL = "http://localhost:8000"
+```
+
+2) Execute o Next.js em desenvolvimento:
+```bash
+pnpm install
+pnpm dev
+```
+
+3) A aplicação usará `NEXT_PUBLIC_API_BASE_URL` para fazer chamadas (ex.: `/projects`, `/backlog`, `/auth/login`).
+Se necessário, ajuste as rotas no backend para corresponderem a esses endpoints ou atualize `lib/api.ts` com os caminhos corretos.
+

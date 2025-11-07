@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { useStore } from "@/lib/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, FolderKanban, Target, ListTodo } from "lucide-react"
@@ -10,6 +11,14 @@ export default function DashboardPage() {
   const projects = useStore((state) => state.projects)
   const sprints = useStore((state) => state.sprints)
   const backlogItems = useStore((state) => state.backlogItems)
+  const fetchUsers = useStore((state) => state.fetchUsers)
+  const fetchProjects = useStore((state) => state.fetchProjects)
+  const fetchSprints = useStore((state) => state.fetchSprints)
+  const fetchBacklogItems = useStore((state) => state.fetchBacklogItems)
+
+  useEffect(() => {
+    void Promise.all([fetchUsers(), fetchProjects(), fetchSprints(), fetchBacklogItems()])
+  }, [fetchUsers, fetchProjects, fetchSprints, fetchBacklogItems])
 
   const activeProjects = projects.filter((p) => !p.archived)
   const activeSprints = sprints.filter((s) => s.status === "Active")
