@@ -3,7 +3,7 @@
 -- \c scrum_db;  -- conectar no banco
 
 -- 1. Tabela Pai: Usuarios
-CREATE TABLE usuarios (
+CREATE TABLE IF NOT EXISTS usuarios (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
@@ -11,8 +11,8 @@ CREATE TABLE usuarios (
 );
 
 -- 2. Tabela Filha: Product Owners
-CREATE TABLE product_owners (
-    usuario_id INT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS product_owners (
+    usuario_id BIGINT UNSIGNED PRIMARY KEY,
     CONSTRAINT fk_po_usuario
         FOREIGN KEY (usuario_id)
         REFERENCES usuarios(id)
@@ -20,8 +20,8 @@ CREATE TABLE product_owners (
 );
 
 -- 3. Tabela Filha: Scrum Masters
-CREATE TABLE scrum_masters (
-    usuario_id INT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS scrum_masters (
+    usuario_id BIGINT UNSIGNED PRIMARY KEY,
     CONSTRAINT fk_sm_usuario
         FOREIGN KEY (usuario_id)
         REFERENCES usuarios(id)
@@ -29,8 +29,8 @@ CREATE TABLE scrum_masters (
 );
 
 -- 4. Tabela Filha: Membros Dev
-CREATE TABLE membros_dev (
-    usuario_id INT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS membros_dev (
+    usuario_id BIGINT UNSIGNED PRIMARY KEY,
     CONSTRAINT fk_md_usuario
         FOREIGN KEY (usuario_id)
         REFERENCES usuarios(id)
@@ -38,15 +38,15 @@ CREATE TABLE membros_dev (
 );
 
 -- 5. Times
-CREATE TABLE times (
+CREATE TABLE IF NOT EXISTS times (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(150) NOT NULL
 );
 
 -- 6. Relação N:N entre Times e Usuarios
-CREATE TABLE times_usuarios (
-    time_id INT NOT NULL,
-    usuario_id INT NOT NULL,
+CREATE TABLE IF NOT EXISTS times_usuarios (
+    time_id BIGINT UNSIGNED NOT NULL,
+    usuario_id BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (time_id, usuario_id),
     CONSTRAINT fk_tu_time
         FOREIGN KEY (time_id)
@@ -59,13 +59,13 @@ CREATE TABLE times_usuarios (
 );
 
 -- 7. Projetos
-CREATE TABLE projetos (
+CREATE TABLE IF NOT EXISTS projetos (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,
     descricao TEXT,
-    product_owner_id INT NOT NULL,
-    scrum_master_id INT NOT NULL,
-    time_id INT NOT NULL,
+    product_owner_id BIGINT UNSIGNED NOT NULL,
+    scrum_master_id BIGINT UNSIGNED NOT NULL,
+    time_id BIGINT UNSIGNED NOT NULL,
     CONSTRAINT fk_proj_po
         FOREIGN KEY (product_owner_id)
         REFERENCES product_owners(usuario_id),
@@ -78,12 +78,12 @@ CREATE TABLE projetos (
 );
 
 -- 8. Sprints
-CREATE TABLE sprints (
+CREATE TABLE IF NOT EXISTS sprints (
     id SERIAL PRIMARY KEY,
     titulo VARCHAR(150) NOT NULL,
     data_inicio DATE NOT NULL,
     data_fim DATE NOT NULL,
-    projeto_id INT NOT NULL,
+    projeto_id BIGINT UNSIGNED NOT NULL,
     CONSTRAINT fk_sprint_projeto
         FOREIGN KEY (projeto_id)
         REFERENCES projetos(id)
@@ -91,12 +91,12 @@ CREATE TABLE sprints (
 );
 
 -- 9. Itens do Backlog
-CREATE TABLE itens_backlog (
+CREATE TABLE IF NOT EXISTS itens_backlog (
     id SERIAL PRIMARY KEY,
     titulo VARCHAR(150) NOT NULL,
     descricao TEXT,
     prioridade INT NOT NULL,
-    projeto_id INT NOT NULL,
+    projeto_id BIGINT UNSIGNED NOT NULL,
     CONSTRAINT fk_ib_projeto
         FOREIGN KEY (projeto_id)
         REFERENCES projetos(id)
@@ -104,14 +104,14 @@ CREATE TABLE itens_backlog (
 );
 
 -- 10. Tarefas
-CREATE TABLE tarefas (
+CREATE TABLE IF NOT EXISTS tarefas (
     id SERIAL PRIMARY KEY,
     titulo VARCHAR(150) NOT NULL,
     descricao TEXT,
     status VARCHAR(50) NOT NULL,
     estimativa_horas INT,
-    item_backlog_id INT NOT NULL,
-    membro_dev_id INT NULL,
+    item_backlog_id BIGINT UNSIGNED NOT NULL,
+    membro_dev_id BIGINT UNSIGNED NULL,
     CONSTRAINT fk_tarefa_ib
         FOREIGN KEY (item_backlog_id)
         REFERENCES itens_backlog(id)
