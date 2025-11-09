@@ -69,7 +69,7 @@ export default function UsersPage() {
     setFormData({
       name: user.name,
       email: user.email,
-      passwordHash: user.passwordHash,
+      passwordHash: user.passwordHash ?? "",
       role: user.role,
     })
     setIsEditDialogOpen(true)
