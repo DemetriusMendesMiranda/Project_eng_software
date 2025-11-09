@@ -55,7 +55,21 @@ export const api = {
 	getSprints: () => request<Array<unknown>>("/sprints"),
 
 	// Teams
-	getTeams: () => request<Array<unknown>>("/teams"),
+	getTeams: () => request<Array<{ id: number; name: string; projectId: number; memberIds: number[] }>>("/teams"),
+	createTeam: (data: { name: string; projectId: number }) =>
+		request<{ id: number; name: string; projectId: number; memberIds: number[] }>("/teams", {
+			method: "POST",
+			body: JSON.stringify(data),
+		}),
+	updateTeam: (id: number, updates: Partial<{ name: string; projectId: number }>) =>
+		request<{ id: number; name: string; projectId: number; memberIds: number[] }>("/teams", {
+			method: "PUT",
+			body: JSON.stringify({ id, ...updates }),
+		}),
+	addTeamMember: (teamId: number, userId: number) =>
+		request<{ ok: boolean }>("/teams/members", { method: "POST", body: JSON.stringify({ teamId, userId }) }),
+	removeTeamMember: (teamId: number, userId: number) =>
+		request<{ ok: boolean }>("/teams/members", { method: "DELETE", body: JSON.stringify({ teamId, userId }) }),
 
 	// Backlog
 	getBacklogItems: () => request<Array<unknown>>("/backlog"),

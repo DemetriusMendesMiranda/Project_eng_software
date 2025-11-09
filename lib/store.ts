@@ -38,10 +38,10 @@ interface AppState {
   archiveProject: (id: number) => void
 
   // Team actions
-  addTeam: (team: Omit<Team, "id">) => void
-  updateTeam: (id: number, updates: Partial<Team>) => void
-  addTeamMember: (teamId: number, userId: number) => void
-  removeTeamMember: (teamId: number, userId: number) => void
+  addTeam: (team: Omit<Team, "id">) => Promise<void>
+  updateTeam: (id: number, updates: Partial<Team>) => Promise<void>
+  addTeamMember: (teamId: number, userId: number) => Promise<void>
+  removeTeamMember: (teamId: number, userId: number) => Promise<void>
 
   // Sprint actions
   addSprint: (sprint: Omit<Sprint, "id">) => void
@@ -173,24 +173,33 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   // Team actions
-  addTeam: (team) => {
-    const newTeam = { ...team, id: Date.now() }
-    set((state) => ({ teams: [...state.teams, newTeam] }))
+  addTeam: async (team) => {
+    const created = await api.createTeam({ name: team.name, projectId: team.projectId })
+    const newTeam = { id: created.id, name: created.name, projectId: created.projectId, memberIds: created.memberIds }
+    set((state) => ({ teams: [newTeam as unknown as Team, ...state.teams] }))
   },
 
-  updateTeam: (id, updates) => {
+  updateTeam: async (id, updates) => {
+    const updated = await api.updateTeam(id, {
+      name: updates.name,
+      projectId: updates.projectId,
+    })
     set((state) => ({
-      teams: state.teams.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+      teams: state.teams.map((t) =>
+        t.id === id ? ({ id: updated.id, name: updated.name, projectId: updated.projectId, memberIds: updated.memberIds } as unknown as Team) : t,
+      ),
     }))
   },
 
-  addTeamMember: (teamId, userId) => {
+  addTeamMember: async (teamId, userId) => {
+    await api.addTeamMember(teamId, userId)
     set((state) => ({
       teams: state.teams.map((t) => (t.id === teamId ? { ...t, memberIds: [...t.memberIds, userId] } : t)),
     }))
   },
 
-  removeTeamMember: (teamId, userId) => {
+  removeTeamMember: async (teamId, userId) => {
+    await api.removeTeamMember(teamId, userId)
     set((state) => ({
       teams: state.teams.map((t) =>
         t.id === teamId ? { ...t, memberIds: t.memberIds.filter((id) => id !== userId) } : t,
@@ -213,8 +222,11 @@ export const useStore = create<AppState>((set, get) => ({
   // Backlog actions
   addBacklogItem: async (item) => {
     const created = (await api.createBacklogItem(item)) as unknown as ItemBacklog
-    // Ensure comments array exists
-    const newItem = { comments: [], ...created } as ItemBacklog
+    // Ensure comments array exists without duplicating the property
+    const newItem = {
+      ...created,
+      comments: ((created as any)?.comments as Comment[] | undefined) ?? [],
+    } as ItemBacklog
     set((state) => ({ backlogItems: [...state.backlogItems, newItem] }))
   },
 
