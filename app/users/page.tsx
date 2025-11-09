@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import type { FormEvent } from "react"
 import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -49,6 +50,11 @@ export default function UsersPage() {
     setIsAddDialogOpen(false)
   }
 
+  const handleAddSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    handleAdd()
+  }
+
   const handleEdit = () => {
     if (editingUser) {
       updateUser(editingUser.id, formData)
@@ -56,6 +62,11 @@ export default function UsersPage() {
       setEditingUser(null)
       setFormData({ name: "", email: "", passwordHash: "", role: "Developer" })
     }
+  }
+
+  const handleEditSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    handleEdit()
   }
 
   const handleDelete = (id: number) => {
@@ -103,64 +114,66 @@ export default function UsersPage() {
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Adicionar Novo Usuário</DialogTitle>
-              <DialogDescription>Crie uma nova conta de usuário com atribuição de papel</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Nome</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="João Silva"
-                />
+            <form onSubmit={handleAddSubmit}>
+              <DialogHeader>
+                <DialogTitle>Adicionar Novo Usuário</DialogTitle>
+                <DialogDescription>Crie uma nova conta de usuário com atribuição de papel</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nome</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="João Silva"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">E-mail</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="joao@exemplo.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Senha</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={formData.passwordHash}
+                    onChange={(e) => setFormData({ ...formData, passwordHash: e.target.value })}
+                    placeholder="Digite a senha"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="role">Papel</Label>
+                  <Select
+                    value={formData.role}
+                    onValueChange={(value) => setFormData({ ...formData, role: value as UserRole })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="SuperAdmin">Super Admin</SelectItem>
+                      <SelectItem value="ScrumMaster">Scrum Master</SelectItem>
+                      <SelectItem value="ProductOwner">Product Owner</SelectItem>
+                      <SelectItem value="Developer">Desenvolvedor</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">E-mail</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="joao@exemplo.com"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.passwordHash}
-                  onChange={(e) => setFormData({ ...formData, passwordHash: e.target.value })}
-                  placeholder="Digite a senha"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="role">Papel</Label>
-                <Select
-                  value={formData.role}
-                  onValueChange={(value) => setFormData({ ...formData, role: value as UserRole })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SuperAdmin">Super Admin</SelectItem>
-                    <SelectItem value="ScrumMaster">Scrum Master</SelectItem>
-                    <SelectItem value="ProductOwner">Product Owner</SelectItem>
-                    <SelectItem value="Developer">Desenvolvedor</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancelar
-              </Button>
-              <Button onClick={handleAdd}>Adicionar Usuário</Button>
-            </DialogFooter>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit">Adicionar Usuário</Button>
+              </DialogFooter>
+            </form>
           </DialogContent>
         </Dialog>
       </div>
@@ -209,61 +222,63 @@ export default function UsersPage() {
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editar Usuário</DialogTitle>
-            <DialogDescription>Atualize as informações e o papel do usuário</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-name">Nome</Label>
-              <Input
-                id="edit-name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
+          <form onSubmit={handleEditSubmit}>
+            <DialogHeader>
+              <DialogTitle>Editar Usuário</DialogTitle>
+              <DialogDescription>Atualize as informações e o papel do usuário</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-name">Nome</Label>
+                <Input
+                  id="edit-name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-email">E-mail</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-password">Senha</Label>
+                <Input
+                  id="edit-password"
+                  type="password"
+                  value={formData.passwordHash}
+                  onChange={(e) => setFormData({ ...formData, passwordHash: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-role">Papel</Label>
+                <Select
+                  value={formData.role}
+                  onValueChange={(value) => setFormData({ ...formData, role: value as UserRole })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SuperAdmin">Super Admin</SelectItem>
+                    <SelectItem value="ScrumMaster">Scrum Master</SelectItem>
+                    <SelectItem value="ProductOwner">Product Owner</SelectItem>
+                    <SelectItem value="Developer">Desenvolvedor</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-email">E-mail</Label>
-              <Input
-                id="edit-email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-password">Senha</Label>
-              <Input
-                id="edit-password"
-                type="password"
-                value={formData.passwordHash}
-                onChange={(e) => setFormData({ ...formData, passwordHash: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-role">Papel</Label>
-              <Select
-                value={formData.role}
-                onValueChange={(value) => setFormData({ ...formData, role: value as UserRole })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SuperAdmin">Super Admin</SelectItem>
-                  <SelectItem value="ScrumMaster">Scrum Master</SelectItem>
-                  <SelectItem value="ProductOwner">Product Owner</SelectItem>
-                  <SelectItem value="Developer">Desenvolvedor</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleEdit}>Salvar Alterações</Button>
-          </DialogFooter>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit">Salvar Alterações</Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
