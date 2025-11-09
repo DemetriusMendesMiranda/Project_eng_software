@@ -1,10 +1,20 @@
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 
 const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || "").replace(/\/$/, "")
+let hasWarnedMissingApiBase = false
 
 function buildUrl(path: string): string {
 	if (!path.startsWith("/")) {
 		path = "/" + path
+	}
+	if (!API_BASE) {
+		if (!hasWarnedMissingApiBase && typeof window !== "undefined") {
+			// eslint-disable-next-line no-console
+			console.warn(
+				"NEXT_PUBLIC_API_BASE_URL is not set. Requests will go to the Next.js origin, which likely won't serve the PHP API. Set it to your PHP server base URL (e.g., http://localhost:8080).",
+			)
+			hasWarnedMissingApiBase = true
+		}
 	}
 	return `${API_BASE}${path}`
 }
@@ -53,6 +63,10 @@ export const api = {
 
 	// Sprints
 	getSprints: () => request<Array<unknown>>("/sprints"),
+	createSprint: (data: unknown) => request<unknown>("/sprints", { method: "POST", body: JSON.stringify(data) }),
+	updateSprint: (id: number, updates: unknown) =>
+		request<unknown>("/sprints", { method: "PUT", body: JSON.stringify({ id, ...(updates as object) }) }),
+	deleteSprint: (id: number) => request<void>("/sprints", { method: "DELETE", body: JSON.stringify({ id }) }),
 
 	// Teams
 	getTeams: () => request<Array<{ id: number; name: string; projectId: number; memberIds: number[] }>>("/teams"),

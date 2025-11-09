@@ -44,8 +44,9 @@ interface AppState {
   removeTeamMember: (teamId: number, userId: number) => Promise<void>
 
   // Sprint actions
-  addSprint: (sprint: Omit<Sprint, "id">) => void
-  updateSprint: (id: number, updates: Partial<Sprint>) => void
+  addSprint: (sprint: Omit<Sprint, "id">) => Promise<void>
+  updateSprint: (id: number, updates: Partial<Sprint>) => Promise<void>
+  deleteSprint: (id: number) => Promise<void>
 
   // Backlog actions
   addBacklogItem: (item: Omit<ItemBacklog, "id" | "comments">) => void
@@ -119,8 +120,14 @@ export const useStore = create<AppState>((set, get) => ({
     set({ teams })
   },
   fetchSprints: async () => {
-    const sprints = (await api.getSprints()) as unknown as Sprint[]
-    set({ sprints })
+    try {
+      const sprints = (await api.getSprints()) as unknown as Sprint[]
+      set({ sprints })
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error("Falha ao carregar sprints da API. Verifique NEXT_PUBLIC_API_BASE_URL e o servidor PHP.", e)
+      // Keep current state; UI will show existing/optimistic items
+    }
   },
   fetchBacklogItems: async () => {
     const backlogItems = (await api.getBacklogItems()) as unknown as ItemBacklog[]
@@ -208,15 +215,38 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   // Sprint actions
-  addSprint: (sprint) => {
-    const newSprint = { ...sprint, id: Date.now() }
-    set((state) => ({ sprints: [...state.sprints, newSprint] }))
+  addSprint: async (sprint) => {
+    try {
+      const created = (await api.createSprint(sprint)) as unknown as Sprint
+      const merged = { ...sprint, ...created } as Sprint
+      set((state) => ({ sprints: [...state.sprints, merged] }))
+    } catch {
+      const fallback = { ...sprint, id: Date.now() } as Sprint
+      set((state) => ({ sprints: [...state.sprints, fallback] }))
+    }
   },
 
-  updateSprint: (id, updates) => {
-    set((state) => ({
-      sprints: state.sprints.map((s) => (s.id === id ? { ...s, ...updates } : s)),
-    }))
+  updateSprint: async (id, updates) => {
+    try {
+      const updated = (await api.updateSprint(id, updates)) as unknown as Sprint
+      set((state) => ({
+        sprints: state.sprints.map((s) => (s.id === id ? { ...s, ...updated } : s)),
+      }))
+    } catch {
+      set((state) => ({
+        sprints: state.sprints.map((s) => (s.id === id ? { ...s, ...updates } : s)),
+      }))
+    }
+  },
+
+  deleteSprint: async (id) => {
+    try {
+      await api.deleteSprint(id)
+    } finally {
+      set((state) => ({
+        sprints: state.sprints.filter((s) => s.id !== id),
+      }))
+    }
   },
 
   // Backlog actions

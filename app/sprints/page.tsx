@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import type { FormEvent } from "react"
 import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Pencil, Calendar } from "lucide-react"
+import { Plus, Pencil, Calendar, Trash2 } from "lucide-react"
 import type { Sprint, SprintStatus } from "@/lib/types"
 
 export default function SprintsPage() {
@@ -27,6 +28,7 @@ export default function SprintsPage() {
   const teams = useStore((state) => state.teams)
   const addSprint = useStore((state) => state.addSprint)
   const updateSprint = useStore((state) => state.updateSprint)
+  const deleteSprint = useStore((state) => state.deleteSprint)
   const fetchSprints = useStore((state) => state.fetchSprints)
   const fetchProjects = useStore((state) => state.fetchProjects)
   const fetchTeams = useStore((state) => state.fetchTeams)
@@ -50,7 +52,7 @@ export default function SprintsPage() {
   }, [fetchSprints, fetchProjects, fetchTeams])
 
   const handleAdd = () => {
-    addSprint(formData)
+    void addSprint(formData)
     setFormData({
       name: "",
       goal: "",
@@ -63,9 +65,14 @@ export default function SprintsPage() {
     setIsAddDialogOpen(false)
   }
 
+  const handleAddSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    handleAdd()
+  }
+
   const handleEdit = () => {
     if (editingSprint) {
-      updateSprint(editingSprint.id, formData)
+      void updateSprint(editingSprint.id, formData)
       setIsEditDialogOpen(false)
       setEditingSprint(null)
       setFormData({
@@ -77,6 +84,17 @@ export default function SprintsPage() {
         projectId: 0,
         teamId: 0,
       })
+    }
+  }
+
+  const handleEditSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    handleEdit()
+  }
+
+  const handleDelete = (id: number) => {
+    if (confirm("Tem certeza de que deseja excluir esta sprint?")) {
+      void deleteSprint(id)
     }
   }
 
@@ -144,115 +162,117 @@ export default function SprintsPage() {
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Adicionar Nova Sprint</DialogTitle>
-              <DialogDescription>Crie uma nova sprint com metas e cronograma</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleAddSubmit}>
+              <DialogHeader>
+                <DialogTitle>Adicionar Nova Sprint</DialogTitle>
+                <DialogDescription>Crie uma nova sprint com metas e cronograma</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nome da Sprint</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Sprint 1"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="status">Status</Label>
+                    <Select
+                      value={formData.status}
+                      onValueChange={(value) => setFormData({ ...formData, status: value as SprintStatus })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Planned">Planejada</SelectItem>
+                        <SelectItem value="Active">Ativa</SelectItem>
+                        <SelectItem value="Concluded">Concluída</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
                 <div className="space-y-2">
-                  <Label htmlFor="name">Nome da Sprint</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Sprint 1"
+                  <Label htmlFor="goal">Meta da Sprint</Label>
+                  <Textarea
+                    id="goal"
+                    value={formData.goal}
+                    onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
+                    placeholder="O que você deseja alcançar nesta sprint?"
+                    rows={3}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="status">Status</Label>
-                  <Select
-                    value={formData.status}
-                    onValueChange={(value) => setFormData({ ...formData, status: value as SprintStatus })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Planned">Planejada</SelectItem>
-                      <SelectItem value="Active">Ativa</SelectItem>
-                      <SelectItem value="Concluded">Concluída</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="startDate">Data de Início</Label>
+                    <Input
+                      id="startDate"
+                      type="date"
+                      value={formData.startDate}
+                      onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="endDate">Data de Término</Label>
+                    <Input
+                      id="endDate"
+                      type="date"
+                      value={formData.endDate}
+                      onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="goal">Meta da Sprint</Label>
-                <Textarea
-                  id="goal"
-                  value={formData.goal}
-                  onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
-                  placeholder="O que você deseja alcançar nesta sprint?"
-                  rows={3}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="startDate">Data de Início</Label>
-                  <Input
-                    id="startDate"
-                    type="date"
-                    value={formData.startDate}
-                    onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="endDate">Data de Término</Label>
-                  <Input
-                    id="endDate"
-                    type="date"
-                    value={formData.endDate}
-                    onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="project">Projeto</Label>
-                  <Select
-                    value={formData.projectId.toString()}
-                    onValueChange={(value) => setFormData({ ...formData, projectId: Number.parseInt(value) })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione um projeto" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {projects
-                        .filter((p) => !p.archived)
-                        .map((project) => (
-                          <SelectItem key={project.id} value={project.id.toString()}>
-                            {project.name}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="project">Projeto</Label>
+                    <Select
+                      value={formData.projectId.toString()}
+                      onValueChange={(value) => setFormData({ ...formData, projectId: Number.parseInt(value) })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um projeto" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projects
+                          .filter((p) => !p.archived)
+                          .map((project) => (
+                            <SelectItem key={project.id} value={project.id.toString()}>
+                              {project.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="team">Time</Label>
+                    <Select
+                      value={formData.teamId.toString()}
+                      onValueChange={(value) => setFormData({ ...formData, teamId: Number.parseInt(value) })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {teams.map((team) => (
+                          <SelectItem key={team.id} value={team.id.toString()}>
+                            {team.name}
                           </SelectItem>
                         ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="team">Time</Label>
-                  <Select
-                    value={formData.teamId.toString()}
-                    onValueChange={(value) => setFormData({ ...formData, teamId: Number.parseInt(value) })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione um time" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {teams.map((team) => (
-                        <SelectItem key={team.id} value={team.id.toString()}>
-                          {team.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancelar
-              </Button>
-              <Button onClick={handleAdd}>Adicionar Sprint</Button>
-            </DialogFooter>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit">Adicionar Sprint</Button>
+              </DialogFooter>
+            </form>
           </DialogContent>
         </Dialog>
       </div>
@@ -273,9 +293,14 @@ export default function SprintsPage() {
                         </div>
                         <CardDescription>{sprint.goal}</CardDescription>
                       </div>
-                      <Button variant="ghost" size="icon" onClick={() => openEditDialog(sprint)}>
-                        <Pencil className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => openEditDialog(sprint)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(sprint.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -318,9 +343,14 @@ export default function SprintsPage() {
                         </div>
                         <CardDescription>{sprint.goal}</CardDescription>
                       </div>
-                      <Button variant="ghost" size="icon" onClick={() => openEditDialog(sprint)}>
-                        <Pencil className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => openEditDialog(sprint)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(sprint.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -363,6 +393,14 @@ export default function SprintsPage() {
                         </div>
                         <CardDescription>{sprint.goal}</CardDescription>
                       </div>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => openEditDialog(sprint)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(sprint.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -393,113 +431,115 @@ export default function SprintsPage() {
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Editar Sprint</DialogTitle>
-            <DialogDescription>Atualize as informações da sprint</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleEditSubmit}>
+            <DialogHeader>
+              <DialogTitle>Editar Sprint</DialogTitle>
+              <DialogDescription>Atualize as informações da sprint</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                <Label htmlFor="edit-name">Nome da Sprint</Label>
+                  <Input
+                    id="edit-name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                <Label htmlFor="edit-status">Status</Label>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(value) => setFormData({ ...formData, status: value as SprintStatus })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                    <SelectItem value="Planned">Planejada</SelectItem>
+                    <SelectItem value="Active">Ativa</SelectItem>
+                    <SelectItem value="Concluded">Concluída</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
               <div className="space-y-2">
-              <Label htmlFor="edit-name">Nome da Sprint</Label>
-                <Input
-                  id="edit-name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                <Label htmlFor="edit-goal">Meta da Sprint</Label>
+                <Textarea
+                  id="edit-goal"
+                  value={formData.goal}
+                  onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
+                  rows={3}
                 />
               </div>
-              <div className="space-y-2">
-              <Label htmlFor="edit-status">Status</Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(value) => setFormData({ ...formData, status: value as SprintStatus })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                  <SelectItem value="Planned">Planejada</SelectItem>
-                  <SelectItem value="Active">Ativa</SelectItem>
-                  <SelectItem value="Concluded">Concluída</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                <Label htmlFor="edit-startDate">Data de Início</Label>
+                  <Input
+                    id="edit-startDate"
+                    type="date"
+                    value={formData.startDate}
+                    onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                <Label htmlFor="edit-endDate">Data de Término</Label>
+                  <Input
+                    id="edit-endDate"
+                    type="date"
+                    value={formData.endDate}
+                    onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-goal">Meta da Sprint</Label>
-              <Textarea
-                id="edit-goal"
-                value={formData.goal}
-                onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
-                rows={3}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-              <Label htmlFor="edit-startDate">Data de Início</Label>
-                <Input
-                  id="edit-startDate"
-                  type="date"
-                  value={formData.startDate}
-                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-              <Label htmlFor="edit-endDate">Data de Término</Label>
-                <Input
-                  id="edit-endDate"
-                  type="date"
-                  value={formData.endDate}
-                  onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-              <Label htmlFor="edit-project">Projeto</Label>
-                <Select
-                  value={formData.projectId.toString()}
-                  onValueChange={(value) => setFormData({ ...formData, projectId: Number.parseInt(value) })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {projects
-                      .filter((p) => !p.archived)
-                      .map((project) => (
-                        <SelectItem key={project.id} value={project.id.toString()}>
-                          {project.name}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                <Label htmlFor="edit-project">Projeto</Label>
+                  <Select
+                    value={formData.projectId.toString()}
+                    onValueChange={(value) => setFormData({ ...formData, projectId: Number.parseInt(value) })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projects
+                        .filter((p) => !p.archived)
+                        .map((project) => (
+                          <SelectItem key={project.id} value={project.id.toString()}>
+                            {project.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                <Label htmlFor="edit-team">Time</Label>
+                  <Select
+                    value={formData.teamId.toString()}
+                    onValueChange={(value) => setFormData({ ...formData, teamId: Number.parseInt(value) })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teams.map((team) => (
+                        <SelectItem key={team.id} value={team.id.toString()}>
+                          {team.name}
                         </SelectItem>
                       ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-              <Label htmlFor="edit-team">Time</Label>
-                <Select
-                  value={formData.teamId.toString()}
-                  onValueChange={(value) => setFormData({ ...formData, teamId: Number.parseInt(value) })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {teams.map((team) => (
-                      <SelectItem key={team.id} value={team.id.toString()}>
-                        {team.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleEdit}>Salvar Alterações</Button>
-          </DialogFooter>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit">Salvar Alterações</Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
