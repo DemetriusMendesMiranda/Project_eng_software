@@ -48,8 +48,8 @@ export const api = {
 	getProjects: () => request<Array<unknown>>("/projects"),
 	createProject: (data: unknown) => request<unknown>("/projects", { method: "POST", body: JSON.stringify(data) }),
 	updateProject: (id: number, updates: unknown) =>
-		request<unknown>(`/projects/${id}`, { method: "PUT", body: JSON.stringify(updates) }),
-	archiveProject: (id: number) => request<void>(`/projects/${id}/archive`, { method: "POST" }),
+		request<unknown>("/projects", { method: "PUT", body: JSON.stringify({ id, ...(updates as object) }) }),
+	archiveProject: (id: number) => request<void>("/projects/archive", { method: "POST", body: JSON.stringify({ id }) }),
 
 	// Sprints
 	getSprints: () => request<Array<unknown>>("/sprints"),

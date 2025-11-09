@@ -82,18 +82,9 @@ try {
     $name = isset($body['name']) ? trim((string)$body['name']) : '';
     $projectId = isset($body['projectId']) ? (int)$body['projectId'] : 0;
 
-    if ($name === '' || $projectId <= 0) {
+    if ($name === '') {
       http_response_code(400);
-      echo json_encode(['message' => 'Campos obrigatórios: name, projectId']);
-      exit;
-    }
-
-    // Ensure project exists
-    $chk = $pdo->prepare('SELECT id FROM projetos WHERE id = ? LIMIT 1');
-    $chk->execute([$projectId]);
-    if (!$chk->fetchColumn()) {
-      http_response_code(404);
-      echo json_encode(['message' => 'Projeto não encontrado']);
+      echo json_encode(['message' => 'Campo obrigatório: name']);
       exit;
     }
 
@@ -102,14 +93,20 @@ try {
     $ins->execute([$name]);
     $teamId = (int)$pdo->lastInsertId();
 
-    // Assign team to project (project has FK time_id)
-    $upd = $pdo->prepare('UPDATE projetos SET time_id = ? WHERE id = ?');
-    $upd->execute([$teamId, $projectId]);
+    // Optionally assign team to project if a valid projectId was provided
+    if ($projectId > 0) {
+      $chk = $pdo->prepare('SELECT id FROM projetos WHERE id = ? LIMIT 1');
+      $chk->execute([$projectId]);
+      if ($chk->fetchColumn()) {
+        $upd = $pdo->prepare('UPDATE projetos SET time_id = ? WHERE id = ?');
+        $upd->execute([$teamId, $projectId]);
+      }
+    }
 
     echo json_encode([
       'id' => $teamId,
       'name' => $name,
-      'projectId' => $projectId,
+      'projectId' => $projectId > 0 ? $projectId : 0,
       'memberIds' => [],
     ]);
     exit;
