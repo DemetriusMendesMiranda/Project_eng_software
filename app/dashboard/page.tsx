@@ -26,28 +26,28 @@ export default function DashboardPage() {
 
   const stats = [
     {
-      title: "Total Users",
+      title: "Total de Usuários",
       value: users.length,
       icon: Users,
       color: "text-blue-500",
       show: currentUser?.role === "SuperAdmin",
     },
     {
-      title: "Active Projects",
+      title: "Projetos Ativos",
       value: activeProjects.length,
       icon: FolderKanban,
       color: "text-purple-500",
       show: true,
     },
     {
-      title: "Active Sprints",
+      title: "Sprints Ativas",
       value: activeSprints.length,
       icon: Target,
       color: "text-green-500",
       show: true,
     },
     {
-      title: "My Tasks",
+      title: "Minhas Tarefas",
       value: myTasks.length,
       icon: ListTodo,
       color: "text-orange-500",
@@ -58,8 +58,8 @@ export default function DashboardPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back, {currentUser?.name}</h1>
-        <p className="text-muted-foreground">Here's what's happening with your projects today.</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Bem-vindo de volta, {currentUser?.name}</h1>
+        <p className="text-muted-foreground">Veja o que está acontecendo com seus projetos hoje.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
@@ -79,7 +79,7 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="border-border bg-card">
           <CardHeader>
-            <CardTitle className="text-foreground">Recent Projects</CardTitle>
+            <CardTitle className="text-foreground">Projetos Recentes</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -103,7 +103,7 @@ export default function DashboardPage() {
 
         <Card className="border-border bg-card">
           <CardHeader>
-            <CardTitle className="text-foreground">Active Sprints</CardTitle>
+            <CardTitle className="text-foreground">Sprints Ativas</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">

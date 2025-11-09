@@ -22,25 +22,25 @@ export function Sidebar() {
 
   const navigation = [
     {
-      name: "Dashboard",
+      name: "Painel",
       href: "/dashboard",
       icon: LayoutDashboard,
       roles: ["SuperAdmin", "ScrumMaster", "ProductOwner", "Developer"],
     },
     {
-      name: "Users",
+      name: "Usuários",
       href: "/users",
       icon: Users,
       roles: ["SuperAdmin"],
     },
     {
-      name: "Projects",
+      name: "Projetos",
       href: "/projects",
       icon: FolderKanban,
       roles: ["SuperAdmin", "ScrumMaster", "ProductOwner"],
     },
     {
-      name: "Teams",
+      name: "Times",
       href: "/teams",
       icon: UserCog,
       roles: ["SuperAdmin", "ScrumMaster"],
@@ -58,13 +58,13 @@ export function Sidebar() {
       roles: ["ProductOwner", "ScrumMaster", "Developer"],
     },
     {
-      name: "Board",
+      name: "Quadro",
       href: "/board",
       icon: Kanban,
       roles: ["ScrumMaster", "ProductOwner", "Developer"],
     },
     {
-      name: "Meetings",
+      name: "Reuniões",
       href: "/meetings",
       icon: Calendar,
       roles: ["ScrumMaster", "ProductOwner", "Developer"],
@@ -79,7 +79,7 @@ export function Sidebar() {
         <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
           <span className="text-primary-foreground font-bold text-lg">S</span>
         </div>
-        <span className="text-lg font-bold text-foreground">Scrum Manager</span>
+        <span className="text-lg font-bold text-foreground">Gerenciador Scrum</span>
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
@@ -119,7 +119,7 @@ export function Sidebar() {
           onClick={handleLogout}
         >
           <LogOut className="mr-2 h-4 w-4" />
-          Logout
+          Sair
         </Button>
       </div>
     </div>

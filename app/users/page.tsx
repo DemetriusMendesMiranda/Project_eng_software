@@ -92,53 +92,53 @@ export default function UsersPage() {
     <div className="p-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">User Management</h1>
-          <p className="text-muted-foreground">Manage system users and their roles</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Gestão de Usuários</h1>
+          <p className="text-muted-foreground">Gerencie os usuários do sistema e seus papéis</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add User
+              Adicionar Usuário
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
-              <DialogDescription>Create a new user account with role assignment</DialogDescription>
+              <DialogTitle>Adicionar Novo Usuário</DialogTitle>
+              <DialogDescription>Crie uma nova conta de usuário com atribuição de papel</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">Nome</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="John Doe"
+                  placeholder="João Silva"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">E-mail</Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="john@example.com"
+                  placeholder="joao@exemplo.com"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Senha</Label>
                 <Input
                   id="password"
                   type="password"
                   value={formData.passwordHash}
                   onChange={(e) => setFormData({ ...formData, passwordHash: e.target.value })}
-                  placeholder="Enter password"
+                  placeholder="Digite a senha"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="role">Role</Label>
+                <Label htmlFor="role">Papel</Label>
                 <Select
                   value={formData.role}
                   onValueChange={(value) => setFormData({ ...formData, role: value as UserRole })}
@@ -150,16 +150,16 @@ export default function UsersPage() {
                     <SelectItem value="SuperAdmin">Super Admin</SelectItem>
                     <SelectItem value="ScrumMaster">Scrum Master</SelectItem>
                     <SelectItem value="ProductOwner">Product Owner</SelectItem>
-                    <SelectItem value="Developer">Developer</SelectItem>
+                    <SelectItem value="Developer">Desenvolvedor</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
+                Cancelar
               </Button>
-              <Button onClick={handleAdd}>Add User</Button>
+              <Button onClick={handleAdd}>Adicionar Usuário</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -167,17 +167,17 @@ export default function UsersPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>All Users</CardTitle>
-          <CardDescription>A list of all users in the system</CardDescription>
+          <CardTitle>Todos os Usuários</CardTitle>
+          <CardDescription>Lista de todos os usuários do sistema</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>E-mail</TableHead>
+                <TableHead>Papel</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -210,12 +210,12 @@ export default function UsersPage() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
-            <DialogDescription>Update user information and role</DialogDescription>
+            <DialogTitle>Editar Usuário</DialogTitle>
+            <DialogDescription>Atualize as informações e o papel do usuário</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">Name</Label>
+              <Label htmlFor="edit-name">Nome</Label>
               <Input
                 id="edit-name"
                 value={formData.name}
@@ -223,7 +223,7 @@ export default function UsersPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-email">Email</Label>
+              <Label htmlFor="edit-email">E-mail</Label>
               <Input
                 id="edit-email"
                 type="email"
@@ -232,7 +232,7 @@ export default function UsersPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-password">Password</Label>
+              <Label htmlFor="edit-password">Senha</Label>
               <Input
                 id="edit-password"
                 type="password"
@@ -241,7 +241,7 @@ export default function UsersPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-role">Role</Label>
+              <Label htmlFor="edit-role">Papel</Label>
               <Select
                 value={formData.role}
                 onValueChange={(value) => setFormData({ ...formData, role: value as UserRole })}
@@ -253,16 +253,16 @@ export default function UsersPage() {
                   <SelectItem value="SuperAdmin">Super Admin</SelectItem>
                   <SelectItem value="ScrumMaster">Scrum Master</SelectItem>
                   <SelectItem value="ProductOwner">Product Owner</SelectItem>
-                  <SelectItem value="Developer">Developer</SelectItem>
+                  <SelectItem value="Developer">Desenvolvedor</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancel
+              Cancelar
             </Button>
-            <Button onClick={handleEdit}>Save Changes</Button>
+            <Button onClick={handleEdit}>Salvar Alterações</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

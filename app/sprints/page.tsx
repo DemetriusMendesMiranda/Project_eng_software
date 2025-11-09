@@ -118,11 +118,11 @@ export default function SprintsPage() {
   }
 
   const getProjectName = (projectId: number) => {
-    return projects.find((p) => p.id === projectId)?.name || "Unknown"
+    return projects.find((p) => p.id === projectId)?.name || "Desconhecido"
   }
 
   const getTeamName = (teamId: number) => {
-    return teams.find((t) => t.id === teamId)?.name || "Unknown"
+    return teams.find((t) => t.id === teamId)?.name || "Desconhecido"
   }
 
   const activeSprints = sprints.filter((s) => s.status === "Active")
@@ -133,25 +133,25 @@ export default function SprintsPage() {
     <div className="p-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Sprint Management</h1>
-          <p className="text-muted-foreground">Plan and track your sprints</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Gestão de Sprints</h1>
+          <p className="text-muted-foreground">Planeje e acompanhe suas sprints</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add Sprint
+              Adicionar Sprint
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Add New Sprint</DialogTitle>
-              <DialogDescription>Create a new sprint with goals and timeline</DialogDescription>
+              <DialogTitle>Adicionar Nova Sprint</DialogTitle>
+              <DialogDescription>Crie uma nova sprint com metas e cronograma</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Sprint Name</Label>
+                  <Label htmlFor="name">Nome da Sprint</Label>
                   <Input
                     id="name"
                     value={formData.name}
@@ -169,26 +169,26 @@ export default function SprintsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Planned">Planned</SelectItem>
-                      <SelectItem value="Active">Active</SelectItem>
-                      <SelectItem value="Concluded">Concluded</SelectItem>
+                      <SelectItem value="Planned">Planejada</SelectItem>
+                      <SelectItem value="Active">Ativa</SelectItem>
+                      <SelectItem value="Concluded">Concluída</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="goal">Sprint Goal</Label>
+                <Label htmlFor="goal">Meta da Sprint</Label>
                 <Textarea
                   id="goal"
                   value={formData.goal}
                   onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
-                  placeholder="What do you want to achieve in this sprint?"
+                  placeholder="O que você deseja alcançar nesta sprint?"
                   rows={3}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="startDate">Start Date</Label>
+                  <Label htmlFor="startDate">Data de Início</Label>
                   <Input
                     id="startDate"
                     type="date"
@@ -197,7 +197,7 @@ export default function SprintsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="endDate">End Date</Label>
+                  <Label htmlFor="endDate">Data de Término</Label>
                   <Input
                     id="endDate"
                     type="date"
@@ -208,13 +208,13 @@ export default function SprintsPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="project">Project</Label>
+                  <Label htmlFor="project">Projeto</Label>
                   <Select
                     value={formData.projectId.toString()}
                     onValueChange={(value) => setFormData({ ...formData, projectId: Number.parseInt(value) })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a project" />
+                      <SelectValue placeholder="Selecione um projeto" />
                     </SelectTrigger>
                     <SelectContent>
                       {projects
@@ -228,13 +228,13 @@ export default function SprintsPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="team">Team</Label>
+                  <Label htmlFor="team">Time</Label>
                   <Select
                     value={formData.teamId.toString()}
                     onValueChange={(value) => setFormData({ ...formData, teamId: Number.parseInt(value) })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a team" />
+                      <SelectValue placeholder="Selecione um time" />
                     </SelectTrigger>
                     <SelectContent>
                       {teams.map((team) => (
@@ -249,9 +249,9 @@ export default function SprintsPage() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
+                Cancelar
               </Button>
-              <Button onClick={handleAdd}>Add Sprint</Button>
+              <Button onClick={handleAdd}>Adicionar Sprint</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -260,7 +260,7 @@ export default function SprintsPage() {
       <div className="space-y-6">
         {activeSprints.length > 0 && (
           <div>
-            <h2 className="text-xl font-semibold text-foreground mb-4">Active Sprints</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">Sprints Ativas</h2>
             <div className="grid gap-4 md:grid-cols-2">
               {activeSprints.map((sprint) => (
                 <Card key={sprint.id} className="border-green-500/20">
@@ -289,10 +289,10 @@ export default function SprintsPage() {
                       </div>
                       <div className="flex gap-4">
                         <span className="text-muted-foreground">
-                          Project: <span className="text-foreground">{getProjectName(sprint.projectId)}</span>
+                          Projeto: <span className="text-foreground">{getProjectName(sprint.projectId)}</span>
                         </span>
                         <span className="text-muted-foreground">
-                          Team: <span className="text-foreground">{getTeamName(sprint.teamId)}</span>
+                          Time: <span className="text-foreground">{getTeamName(sprint.teamId)}</span>
                         </span>
                       </div>
                     </div>
@@ -305,7 +305,7 @@ export default function SprintsPage() {
 
         {plannedSprints.length > 0 && (
           <div>
-            <h2 className="text-xl font-semibold text-foreground mb-4">Planned Sprints</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">Sprints Planejadas</h2>
             <div className="grid gap-4 md:grid-cols-2">
               {plannedSprints.map((sprint) => (
                 <Card key={sprint.id}>
@@ -350,7 +350,7 @@ export default function SprintsPage() {
 
         {concludedSprints.length > 0 && (
           <div>
-            <h2 className="text-xl font-semibold text-foreground mb-4">Concluded Sprints</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">Sprints Concluídas</h2>
             <div className="grid gap-4 md:grid-cols-2">
               {concludedSprints.map((sprint) => (
                 <Card key={sprint.id}>
@@ -394,13 +394,13 @@ export default function SprintsPage() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Sprint</DialogTitle>
-            <DialogDescription>Update sprint information</DialogDescription>
+            <DialogTitle>Editar Sprint</DialogTitle>
+            <DialogDescription>Atualize as informações da sprint</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-name">Sprint Name</Label>
+              <Label htmlFor="edit-name">Nome da Sprint</Label>
                 <Input
                   id="edit-name"
                   value={formData.name}
@@ -408,7 +408,7 @@ export default function SprintsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-status">Status</Label>
+              <Label htmlFor="edit-status">Status</Label>
                 <Select
                   value={formData.status}
                   onValueChange={(value) => setFormData({ ...formData, status: value as SprintStatus })}
@@ -417,15 +417,15 @@ export default function SprintsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Planned">Planned</SelectItem>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Concluded">Concluded</SelectItem>
+                  <SelectItem value="Planned">Planejada</SelectItem>
+                  <SelectItem value="Active">Ativa</SelectItem>
+                  <SelectItem value="Concluded">Concluída</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-goal">Sprint Goal</Label>
+              <Label htmlFor="edit-goal">Meta da Sprint</Label>
               <Textarea
                 id="edit-goal"
                 value={formData.goal}
@@ -435,7 +435,7 @@ export default function SprintsPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-startDate">Start Date</Label>
+              <Label htmlFor="edit-startDate">Data de Início</Label>
                 <Input
                   id="edit-startDate"
                   type="date"
@@ -444,7 +444,7 @@ export default function SprintsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-endDate">End Date</Label>
+              <Label htmlFor="edit-endDate">Data de Término</Label>
                 <Input
                   id="edit-endDate"
                   type="date"
@@ -455,7 +455,7 @@ export default function SprintsPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-project">Project</Label>
+              <Label htmlFor="edit-project">Projeto</Label>
                 <Select
                   value={formData.projectId.toString()}
                   onValueChange={(value) => setFormData({ ...formData, projectId: Number.parseInt(value) })}
@@ -475,7 +475,7 @@ export default function SprintsPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-team">Team</Label>
+              <Label htmlFor="edit-team">Time</Label>
                 <Select
                   value={formData.teamId.toString()}
                   onValueChange={(value) => setFormData({ ...formData, teamId: Number.parseInt(value) })}
@@ -496,9 +496,9 @@ export default function SprintsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancel
+              Cancelar
             </Button>
-            <Button onClick={handleEdit}>Save Changes</Button>
+            <Button onClick={handleEdit}>Salvar Alterações</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

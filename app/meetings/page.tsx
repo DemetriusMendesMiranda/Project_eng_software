@@ -83,7 +83,7 @@ export default function MeetingsPage() {
   }
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this meeting?")) {
+    if (confirm("Tem certeza de que deseja excluir esta reunião?")) {
       deleteMeeting(id)
     }
   }
@@ -112,11 +112,11 @@ export default function MeetingsPage() {
   }
 
   const getTeamName = (teamId: number) => {
-    return teams.find((t) => t.id === teamId)?.name || "Unknown"
+    return teams.find((t) => t.id === teamId)?.name || "Desconhecido"
   }
 
   const getUserName = (userId: number) => {
-    return users.find((u) => u.id === userId)?.name || "Unknown"
+    return users.find((u) => u.id === userId)?.name || "Desconhecido"
   }
 
   const getMeetingTypeBadge = (type: Meeting["type"]) => {
@@ -146,34 +146,34 @@ export default function MeetingsPage() {
     <div className="p-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Meeting Management</h1>
-          <p className="text-muted-foreground">Schedule and manage team meetings</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Gestão de Reuniões</h1>
+          <p className="text-muted-foreground">Agende e gerencie reuniões da equipe</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Schedule Meeting
+              Agendar Reunião
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Schedule New Meeting</DialogTitle>
-              <DialogDescription>Create a new meeting for your team</DialogDescription>
+              <DialogTitle>Agendar Nova Reunião</DialogTitle>
+              <DialogDescription>Crie uma nova reunião para sua equipe</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="title">Meeting Title</Label>
+                <Label htmlFor="title">Título da Reunião</Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Sprint Planning Meeting"
+                  placeholder="Reunião de Planejamento da Sprint"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="type">Meeting Type</Label>
+                  <Label htmlFor="type">Tipo de Reunião</Label>
                   <Select
                     value={formData.type}
                     onValueChange={(value) => setFormData({ ...formData, type: value as Meeting["type"] })}
@@ -182,22 +182,22 @@ export default function MeetingsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Sprint Planning">Sprint Planning</SelectItem>
+                      <SelectItem value="Sprint Planning">Planejamento da Sprint</SelectItem>
                       <SelectItem value="Daily Standup">Daily Standup</SelectItem>
-                      <SelectItem value="Sprint Review">Sprint Review</SelectItem>
-                      <SelectItem value="Sprint Retrospective">Sprint Retrospective</SelectItem>
-                      <SelectItem value="Stakeholder Meeting">Stakeholder Meeting</SelectItem>
+                      <SelectItem value="Sprint Review">Revisão da Sprint</SelectItem>
+                      <SelectItem value="Sprint Retrospective">Retrospectiva da Sprint</SelectItem>
+                      <SelectItem value="Stakeholder Meeting">Reunião com Stakeholders</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="team">Team</Label>
+                  <Label htmlFor="team">Time</Label>
                   <Select
                     value={formData.teamId.toString()}
                     onValueChange={(value) => setFormData({ ...formData, teamId: Number.parseInt(value) })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a team" />
+                      <SelectValue placeholder="Selecione um time" />
                     </SelectTrigger>
                     <SelectContent>
                       {teams.map((team) => (
@@ -211,7 +211,7 @@ export default function MeetingsPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="date">Date & Time</Label>
+                  <Label htmlFor="date">Data e Hora</Label>
                   <Input
                     id="date"
                     type="datetime-local"
@@ -220,7 +220,7 @@ export default function MeetingsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="duration">Duration (minutes)</Label>
+                  <Label htmlFor="duration">Duração (minutos)</Label>
                   <Input
                     id="duration"
                     type="number"
@@ -231,7 +231,7 @@ export default function MeetingsPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Attendees</Label>
+                <Label>Participantes</Label>
                 <div className="border rounded-lg p-4 space-y-2 max-h-48 overflow-y-auto">
                   {users.map((user) => (
                     <div key={user.id} className="flex items-center space-x-2">
@@ -251,21 +251,21 @@ export default function MeetingsPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="notes">Notes (Optional)</Label>
+                <Label htmlFor="notes">Notas (Opcional)</Label>
                 <Textarea
                   id="notes"
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder="Meeting agenda or notes..."
+                  placeholder="Pauta ou notas da reunião..."
                   rows={3}
                 />
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
+                Cancelar
               </Button>
-              <Button onClick={handleAdd}>Schedule Meeting</Button>
+              <Button onClick={handleAdd}>Agendar Reunião</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -274,7 +274,7 @@ export default function MeetingsPage() {
       <div className="space-y-6">
         {upcomingMeetings.length > 0 && (
           <div>
-            <h2 className="text-xl font-semibold text-foreground mb-4">Upcoming Meetings</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">Próximas Reuniões</h2>
             <div className="grid gap-4 md:grid-cols-2">
               {upcomingMeetings.map((meeting) => (
                 <Card key={meeting.id} className="border-blue-500/20">
@@ -285,7 +285,7 @@ export default function MeetingsPage() {
                           <CardTitle className="text-lg">{meeting.title}</CardTitle>
                           {getMeetingTypeBadge(meeting.type)}
                         </div>
-                        <CardDescription>Team: {getTeamName(meeting.teamId)}</CardDescription>
+                        <CardDescription>Time: {getTeamName(meeting.teamId)}</CardDescription>
                       </div>
                       <div className="flex gap-2">
                         <Button variant="ghost" size="icon" onClick={() => openEditDialog(meeting)}>
@@ -317,7 +317,7 @@ export default function MeetingsPage() {
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <UsersIcon className="h-4 w-4" />
-                        <span>{meeting.attendeeIds.length} attendees</span>
+                        <span>{meeting.attendeeIds.length} participantes</span>
                       </div>
                       {meeting.notes && (
                         <p className="text-sm text-muted-foreground border-t pt-3 mt-3">{meeting.notes}</p>
@@ -332,7 +332,7 @@ export default function MeetingsPage() {
 
         {pastMeetings.length > 0 && (
           <div>
-            <h2 className="text-xl font-semibold text-foreground mb-4">Past Meetings</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">Reuniões Passadas</h2>
             <div className="grid gap-4 md:grid-cols-2">
               {pastMeetings.map((meeting) => (
                 <Card key={meeting.id} className="opacity-75">
@@ -343,7 +343,7 @@ export default function MeetingsPage() {
                           <CardTitle className="text-lg">{meeting.title}</CardTitle>
                           {getMeetingTypeBadge(meeting.type)}
                         </div>
-                        <CardDescription>Team: {getTeamName(meeting.teamId)}</CardDescription>
+                        <CardDescription>Time: {getTeamName(meeting.teamId)}</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
@@ -367,7 +367,7 @@ export default function MeetingsPage() {
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <UsersIcon className="h-4 w-4" />
-                        <span>{meeting.attendeeIds.length} attendees</span>
+                        <span>{meeting.attendeeIds.length} participantes</span>
                       </div>
                       {meeting.notes && (
                         <p className="text-sm text-muted-foreground border-t pt-3 mt-3">{meeting.notes}</p>
@@ -384,12 +384,12 @@ export default function MeetingsPage() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Meeting</DialogTitle>
-            <DialogDescription>Update meeting details</DialogDescription>
+            <DialogTitle>Editar Reunião</DialogTitle>
+            <DialogDescription>Atualize os detalhes da reunião</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-title">Meeting Title</Label>
+              <Label htmlFor="edit-title">Título da Reunião</Label>
               <Input
                 id="edit-title"
                 value={formData.title}
@@ -398,7 +398,7 @@ export default function MeetingsPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-type">Meeting Type</Label>
+              <Label htmlFor="edit-type">Tipo de Reunião</Label>
                 <Select
                   value={formData.type}
                   onValueChange={(value) => setFormData({ ...formData, type: value as Meeting["type"] })}
@@ -416,7 +416,7 @@ export default function MeetingsPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-team">Team</Label>
+              <Label htmlFor="edit-team">Time</Label>
                 <Select
                   value={formData.teamId.toString()}
                   onValueChange={(value) => setFormData({ ...formData, teamId: Number.parseInt(value) })}
@@ -436,7 +436,7 @@ export default function MeetingsPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-date">Date & Time</Label>
+              <Label htmlFor="edit-date">Data e Hora</Label>
                 <Input
                   id="edit-date"
                   type="datetime-local"
@@ -445,7 +445,7 @@ export default function MeetingsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-duration">Duration (minutes)</Label>
+              <Label htmlFor="edit-duration">Duração (minutos)</Label>
                 <Input
                   id="edit-duration"
                   type="number"
@@ -456,7 +456,7 @@ export default function MeetingsPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Attendees</Label>
+              <Label>Participantes</Label>
               <div className="border rounded-lg p-4 space-y-2 max-h-48 overflow-y-auto">
                 {users.map((user) => (
                   <div key={user.id} className="flex items-center space-x-2">
@@ -476,7 +476,7 @@ export default function MeetingsPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-notes">Notes (Optional)</Label>
+              <Label htmlFor="edit-notes">Notas (Opcional)</Label>
               <Textarea
                 id="edit-notes"
                 value={formData.notes}
@@ -487,9 +487,9 @@ export default function MeetingsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancel
+              Cancelar
             </Button>
-            <Button onClick={handleEdit}>Save Changes</Button>
+            <Button onClick={handleEdit}>Salvar Alterações</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

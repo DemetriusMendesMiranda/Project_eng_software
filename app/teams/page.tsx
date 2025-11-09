@@ -70,7 +70,7 @@ export default function TeamsPage() {
   }
 
   const handleRemoveMember = (teamId: number, userId: number) => {
-    if (confirm("Remove this member from the team?")) {
+    if (confirm("Remover este membro do time?")) {
       removeTeamMember(teamId, userId)
     }
   }
@@ -90,11 +90,11 @@ export default function TeamsPage() {
   }
 
   const getProjectName = (projectId: number) => {
-    return projects.find((p) => p.id === projectId)?.name || "Unknown"
+    return projects.find((p) => p.id === projectId)?.name || "Desconhecido"
   }
 
   const getUserName = (userId: number) => {
-    return users.find((u) => u.id === userId)?.name || "Unknown"
+    return users.find((u) => u.id === userId)?.name || "Desconhecido"
   }
 
   const getAvailableUsers = (team: Team) => {
@@ -105,39 +105,39 @@ export default function TeamsPage() {
     <div className="p-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Team Management</h1>
-          <p className="text-muted-foreground">Manage teams and their members</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Gestão de Times</h1>
+          <p className="text-muted-foreground">Gerencie os times e seus membros</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add Team
+              Adicionar Time
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Team</DialogTitle>
-              <DialogDescription>Create a new team for a project</DialogDescription>
+              <DialogTitle>Adicionar Novo Time</DialogTitle>
+              <DialogDescription>Crie um novo time para um projeto</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Team Name</Label>
+                <Label htmlFor="name">Nome do Time</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Alpha Team"
+                  placeholder="Time Alpha"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="project">Project</Label>
+                <Label htmlFor="project">Projeto</Label>
                 <Select
                   value={formData.projectId.toString()}
                   onValueChange={(value) => setFormData({ ...formData, projectId: Number.parseInt(value) })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a project" />
+                    <SelectValue placeholder="Selecione um projeto" />
                   </SelectTrigger>
                   <SelectContent>
                     {projects
@@ -153,9 +153,9 @@ export default function TeamsPage() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
+                Cancelar
               </Button>
-              <Button onClick={handleAdd}>Add Team</Button>
+              <Button onClick={handleAdd}>Adicionar Time</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -168,7 +168,7 @@ export default function TeamsPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle>{team.name}</CardTitle>
-                  <CardDescription className="mt-1">Project: {getProjectName(team.projectId)}</CardDescription>
+                  <CardDescription className="mt-1">Projeto: {getProjectName(team.projectId)}</CardDescription>
                 </div>
                 <Button variant="ghost" size="icon" onClick={() => openEditDialog(team)}>
                   <Pencil className="h-4 w-4" />
@@ -178,10 +178,10 @@ export default function TeamsPage() {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-muted-foreground">Members ({team.memberIds.length})</span>
+                  <span className="text-sm font-medium text-muted-foreground">Membros ({team.memberIds.length})</span>
                   <Button variant="outline" size="sm" onClick={() => openMemberDialog(team)}>
                     <UserPlus className="h-3 w-3 mr-1" />
-                    Add
+                    Adicionar
                   </Button>
                 </div>
                 <div className="space-y-2">
@@ -199,7 +199,7 @@ export default function TeamsPage() {
                     </div>
                   ))}
                   {team.memberIds.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">No members yet</p>
+                    <p className="text-sm text-muted-foreground text-center py-4">Ainda não há membros</p>
                   )}
                 </div>
               </div>
@@ -211,12 +211,12 @@ export default function TeamsPage() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Team</DialogTitle>
-            <DialogDescription>Update team information</DialogDescription>
+            <DialogTitle>Editar Time</DialogTitle>
+            <DialogDescription>Atualize as informações do time</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">Team Name</Label>
+              <Label htmlFor="edit-name">Nome do Time</Label>
               <Input
                 id="edit-name"
                 value={formData.name}
@@ -224,7 +224,7 @@ export default function TeamsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-project">Project</Label>
+              <Label htmlFor="edit-project">Projeto</Label>
               <Select
                 value={formData.projectId.toString()}
                 onValueChange={(value) => setFormData({ ...formData, projectId: Number.parseInt(value) })}
@@ -246,9 +246,9 @@ export default function TeamsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancel
+              Cancelar
             </Button>
-            <Button onClick={handleEdit}>Save Changes</Button>
+            <Button onClick={handleEdit}>Salvar Alterações</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -256,15 +256,15 @@ export default function TeamsPage() {
       <Dialog open={isMemberDialogOpen} onOpenChange={setIsMemberDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Team Member</DialogTitle>
-            <DialogDescription>Add a user to {selectedTeam?.name}</DialogDescription>
+            <DialogTitle>Adicionar Membro ao Time</DialogTitle>
+            <DialogDescription>Adicionar um usuário ao {selectedTeam?.name}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="user">Select User</Label>
+              <Label htmlFor="user">Selecionar Usuário</Label>
               <Select value={selectedUserId} onValueChange={setSelectedUserId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose a user" />
+                  <SelectValue placeholder="Escolha um usuário" />
                 </SelectTrigger>
                 <SelectContent>
                   {selectedTeam &&
@@ -279,9 +279,9 @@ export default function TeamsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsMemberDialogOpen(false)}>
-              Cancel
+              Cancelar
             </Button>
-            <Button onClick={handleAddMember}>Add Member</Button>
+            <Button onClick={handleAddMember}>Adicionar Membro</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

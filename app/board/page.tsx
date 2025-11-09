@@ -23,21 +23,21 @@ export default function BoardPage() {
   return (
     <div className="p-8 h-screen flex flex-col">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Kanban Board</h1>
-        <p className="text-muted-foreground mb-4">Drag and drop items to update their status</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Quadro Kanban</h1>
+        <p className="text-muted-foreground mb-4">Arraste e solte itens para atualizar o status</p>
 
         <div className="flex gap-4">
           <div className="w-64">
-            <Label htmlFor="project-filter">Filter by Project</Label>
+            <Label htmlFor="project-filter">Filtrar por Projeto</Label>
             <Select
               value={selectedProject?.toString() || "all"}
               onValueChange={(value) => setSelectedProject(value === "all" ? null : Number.parseInt(value))}
             >
               <SelectTrigger id="project-filter">
-                <SelectValue placeholder="All Projects" />
+                <SelectValue placeholder="Todos os Projetos" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Projects</SelectItem>
+                <SelectItem value="all">Todos os Projetos</SelectItem>
                 {projects
                   .filter((p) => !p.archived)
                   .map((project) => (
@@ -49,16 +49,16 @@ export default function BoardPage() {
             </Select>
           </div>
           <div className="w-64">
-            <Label htmlFor="sprint-filter">Filter by Sprint</Label>
+            <Label htmlFor="sprint-filter">Filtrar por Sprint</Label>
             <Select
               value={selectedSprint?.toString() || "all"}
               onValueChange={(value) => setSelectedSprint(value === "all" ? null : Number.parseInt(value))}
             >
               <SelectTrigger id="sprint-filter">
-                <SelectValue placeholder="All Sprints" />
+                <SelectValue placeholder="Todas as Sprints" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Sprints</SelectItem>
+                <SelectItem value="all">Todas as Sprints</SelectItem>
                 {sprints.map((sprint) => (
                   <SelectItem key={sprint.id} value={sprint.id.toString()}>
                     {sprint.name}

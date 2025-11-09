@@ -29,7 +29,7 @@ export default function LoginPage() {
     if (success) {
       router.push("/dashboard")
     } else {
-      setError("Invalid email or password")
+      setError("E-mail ou senha inválidos")
     }
 
     setLoading(false)
@@ -45,21 +45,21 @@ export default function LoginPage() {
             </div>
             <span className="text-xl font-bold text-foreground">Scrum Manager</span>
           </div>
-          <CardTitle className="text-2xl font-bold text-foreground">Welcome back</CardTitle>
+          <CardTitle className="text-2xl font-bold text-foreground">Bem-vindo de volta</CardTitle>
           <CardDescription className="text-muted-foreground">
-            Enter your credentials to access your account
+            Insira suas credenciais para acessar sua conta
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground">
-                Email
+                E-mail
               </Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="name@company.com"
+                placeholder="nome@empresa.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -68,12 +68,12 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password" className="text-foreground">
-                Password
+                Senha
               </Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Digite sua senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -89,17 +89,17 @@ export default function LoginPage() {
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
 
           <div className="mt-6 p-4 bg-muted rounded-lg border border-border">
-            <p className="text-sm font-medium text-foreground mb-2">Demo Accounts:</p>
+            <p className="text-sm font-medium text-foreground mb-2">Contas de demonstração:</p>
             <div className="space-y-1 text-xs text-muted-foreground">
               <p>Super Admin: admin@scrum.com / admin123</p>
               <p>Scrum Master: john@scrum.com / scrum123</p>
               <p>Product Owner: sarah@scrum.com / product123</p>
-              <p>Developer: mike@scrum.com / dev123</p>
+              <p>Desenvolvedor: mike@scrum.com / dev123</p>
             </div>
           </div>
         </CardContent>

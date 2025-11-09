@@ -59,7 +59,7 @@ export default function ProjectsPage() {
   }
 
   const handleArchive = (id: number) => {
-    if (confirm("Are you sure you want to archive this project?")) {
+    if (confirm("Tem certeza de que deseja arquivar este projeto?")) {
       archiveProject(id)
     }
   }
@@ -82,44 +82,44 @@ export default function ProjectsPage() {
     <div className="p-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Project Management</h1>
-          <p className="text-muted-foreground">Manage your projects and track progress</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Gestão de Projetos</h1>
+          <p className="text-muted-foreground">Gerencie seus projetos e acompanhe o progresso</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add Project
+              Adicionar Projeto
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Project</DialogTitle>
-              <DialogDescription>Create a new project with timeline</DialogDescription>
+              <DialogTitle>Adicionar Novo Projeto</DialogTitle>
+              <DialogDescription>Crie um novo projeto com cronograma</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Project Name</Label>
+                <Label htmlFor="name">Nome do Projeto</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="E-Commerce Platform"
+                  placeholder="Plataforma de E-commerce"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Descrição</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Project description..."
+                  placeholder="Descrição do projeto..."
                   rows={3}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="startDate">Start Date</Label>
+                  <Label htmlFor="startDate">Data de Início</Label>
                   <Input
                     id="startDate"
                     type="date"
@@ -128,7 +128,7 @@ export default function ProjectsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="expectedEndDate">Expected End Date</Label>
+                  <Label htmlFor="expectedEndDate">Data de Término Prevista</Label>
                   <Input
                     id="expectedEndDate"
                     type="date"
@@ -140,9 +140,9 @@ export default function ProjectsPage() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
+                Cancelar
               </Button>
-              <Button onClick={handleAdd}>Add Project</Button>
+              <Button onClick={handleAdd}>Adicionar Projeto</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -150,18 +150,18 @@ export default function ProjectsPage() {
 
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Active Projects</CardTitle>
-          <CardDescription>Currently active projects</CardDescription>
+          <CardTitle>Projetos Ativos</CardTitle>
+          <CardDescription>Projetos atualmente ativos</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Descrição</TableHead>
+                <TableHead>Data de Início</TableHead>
+                <TableHead>Data de Término</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -191,18 +191,18 @@ export default function ProjectsPage() {
       {archivedProjects.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Archived Projects</CardTitle>
-            <CardDescription>Previously archived projects</CardDescription>
+          <CardTitle>Projetos Arquivados</CardTitle>
+          <CardDescription>Projetos arquivados anteriormente</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Start Date</TableHead>
-                  <TableHead>End Date</TableHead>
-                  <TableHead>Status</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Descrição</TableHead>
+                <TableHead>Data de Início</TableHead>
+                <TableHead>Data de Término</TableHead>
+                <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -214,7 +214,7 @@ export default function ProjectsPage() {
                     <TableCell>{new Date(project.expectedEndDate).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className="bg-gray-500/10 text-gray-500">
-                        Archived
+                        Arquivado
                       </Badge>
                     </TableCell>
                   </TableRow>
@@ -228,12 +228,12 @@ export default function ProjectsPage() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Project</DialogTitle>
-            <DialogDescription>Update project information</DialogDescription>
+            <DialogTitle>Editar Projeto</DialogTitle>
+            <DialogDescription>Atualize as informações do projeto</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">Project Name</Label>
+              <Label htmlFor="edit-name">Nome do Projeto</Label>
               <Input
                 id="edit-name"
                 value={formData.name}
@@ -241,7 +241,7 @@ export default function ProjectsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-description">Description</Label>
+              <Label htmlFor="edit-description">Descrição</Label>
               <Textarea
                 id="edit-description"
                 value={formData.description}
@@ -251,7 +251,7 @@ export default function ProjectsPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-startDate">Start Date</Label>
+                <Label htmlFor="edit-startDate">Data de Início</Label>
                 <Input
                   id="edit-startDate"
                   type="date"
@@ -260,7 +260,7 @@ export default function ProjectsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-expectedEndDate">Expected End Date</Label>
+                <Label htmlFor="edit-expectedEndDate">Data de Término Prevista</Label>
                 <Input
                   id="edit-expectedEndDate"
                   type="date"
@@ -272,9 +272,9 @@ export default function ProjectsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancel
+              Cancelar
             </Button>
-            <Button onClick={handleEdit}>Save Changes</Button>
+            <Button onClick={handleEdit}>Salvar Alterações</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

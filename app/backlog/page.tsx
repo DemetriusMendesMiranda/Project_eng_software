@@ -97,7 +97,7 @@ export default function BacklogPage() {
   }
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this backlog item?")) {
+    if (confirm("Tem certeza de que deseja excluir este item do backlog?")) {
       deleteBacklogItem(id)
     }
   }
@@ -138,19 +138,19 @@ export default function BacklogPage() {
       case "ToDo":
         return (
           <Badge variant="outline" className="bg-gray-500/10 text-gray-500">
-            To Do
+            A Fazer
           </Badge>
         )
       case "InProgress":
         return (
           <Badge variant="outline" className="bg-blue-500/10 text-blue-500">
-            In Progress
+            Em Progresso
           </Badge>
         )
       case "Done":
         return (
           <Badge variant="outline" className="bg-green-500/10 text-green-500">
-            Done
+            Concluído
           </Badge>
         )
     }
@@ -171,61 +171,61 @@ export default function BacklogPage() {
   }
 
   const getUserName = (userId?: number) => {
-    if (!userId) return "Unassigned"
-    return users.find((u) => u.id === userId)?.name || "Unknown"
+    if (!userId) return "Não atribuído"
+    return users.find((u) => u.id === userId)?.name || "Desconhecido"
   }
 
   const getProjectName = (projectId: number) => {
-    return projects.find((p) => p.id === projectId)?.name || "Unknown"
+    return projects.find((p) => p.id === projectId)?.name || "Desconhecido"
   }
 
   const getSprintName = (sprintId?: number) => {
-    if (!sprintId) return "No Sprint"
-    return sprints.find((s) => s.id === sprintId)?.name || "Unknown"
+    if (!sprintId) return "Sem Sprint"
+    return sprints.find((s) => s.id === sprintId)?.name || "Desconhecido"
   }
 
   return (
     <div className="p-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Product Backlog</h1>
-          <p className="text-muted-foreground">Manage and prioritize backlog items</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Backlog do Produto</h1>
+          <p className="text-muted-foreground">Gerencie e priorize os itens do backlog</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add Item
+              Adicionar Item
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Add Backlog Item</DialogTitle>
-              <DialogDescription>Create a new item in the product backlog</DialogDescription>
+              <DialogTitle>Adicionar Item ao Backlog</DialogTitle>
+              <DialogDescription>Crie um novo item no backlog do produto</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="title">Title</Label>
+                <Label htmlFor="title">Título</Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="User Authentication"
+                  placeholder="Autenticação de Usuário"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Descrição</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Detailed description of the backlog item..."
+                  placeholder="Descrição detalhada do item do backlog..."
                   rows={3}
                 />
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="priority">Priority</Label>
+                  <Label htmlFor="priority">Prioridade</Label>
                   <Input
                     id="priority"
                     type="number"
@@ -235,7 +235,7 @@ export default function BacklogPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="estimation">Estimation (hours)</Label>
+                  <Label htmlFor="estimation">Estimativa (horas)</Label>
                   <Input
                     id="estimation"
                     type="number"
@@ -254,22 +254,22 @@ export default function BacklogPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="ToDo">To Do</SelectItem>
-                      <SelectItem value="InProgress">In Progress</SelectItem>
-                      <SelectItem value="Done">Done</SelectItem>
+                      <SelectItem value="ToDo">A Fazer</SelectItem>
+                      <SelectItem value="InProgress">Em Progresso</SelectItem>
+                      <SelectItem value="Done">Concluído</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="project">Project</Label>
+                  <Label htmlFor="project">Projeto</Label>
                   <Select
                     value={formData.projectId.toString()}
                     onValueChange={(value) => setFormData({ ...formData, projectId: Number.parseInt(value) })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select project" />
+                      <SelectValue placeholder="Selecione o projeto" />
                     </SelectTrigger>
                     <SelectContent>
                       {projects
@@ -283,7 +283,7 @@ export default function BacklogPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="sprint">Sprint (Optional)</Label>
+                  <Label htmlFor="sprint">Sprint (Opcional)</Label>
                   <Select
                     value={formData.sprintId?.toString() || "none"}
                     onValueChange={(value) =>
@@ -291,10 +291,10 @@ export default function BacklogPage() {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="No sprint" />
+                      <SelectValue placeholder="Sem sprint" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">No Sprint</SelectItem>
+                      <SelectItem value="none">Sem Sprint</SelectItem>
                       {sprints.map((sprint) => (
                         <SelectItem key={sprint.id} value={sprint.id.toString()}>
                           {sprint.name}
@@ -304,7 +304,7 @@ export default function BacklogPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="assignee">Assignee (Optional)</Label>
+                  <Label htmlFor="assignee">Responsável (Opcional)</Label>
                   <Select
                     value={formData.assignedToId?.toString() || "none"}
                     onValueChange={(value) =>
@@ -312,10 +312,10 @@ export default function BacklogPage() {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Unassigned" />
+                      <SelectValue placeholder="Não atribuído" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">Unassigned</SelectItem>
+                      <SelectItem value="none">Não atribuído</SelectItem>
                       {users.map((user) => (
                         <SelectItem key={user.id} value={user.id.toString()}>
                           {user.name}
@@ -328,9 +328,9 @@ export default function BacklogPage() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
+                Cancelar
               </Button>
-              <Button onClick={handleAdd}>Add Item</Button>
+              <Button onClick={handleAdd}>Adicionar Item</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -364,11 +364,11 @@ export default function BacklogPage() {
             </CardHeader>
             <CardContent>
               <div className="flex gap-6 text-sm text-muted-foreground">
-                <span>Estimation: {item.estimation}h</span>
-                <span>Project: {getProjectName(item.projectId)}</span>
+                <span>Estimativa: {item.estimation}h</span>
+                <span>Projeto: {getProjectName(item.projectId)}</span>
                 <span>Sprint: {getSprintName(item.sprintId)}</span>
-                <span>Assigned: {getUserName(item.assignedToId)}</span>
-                <span>Comments: {item.comments.length}</span>
+                <span>Responsável: {getUserName(item.assignedToId)}</span>
+                <span>Comentários: {item.comments.length}</span>
               </div>
             </CardContent>
           </Card>
@@ -378,12 +378,12 @@ export default function BacklogPage() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Backlog Item</DialogTitle>
-            <DialogDescription>Update backlog item details</DialogDescription>
+            <DialogTitle>Editar Item do Backlog</DialogTitle>
+            <DialogDescription>Atualize os detalhes do item</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-title">Title</Label>
+              <Label htmlFor="edit-title">Título</Label>
               <Input
                 id="edit-title"
                 value={formData.title}
@@ -391,7 +391,7 @@ export default function BacklogPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-description">Description</Label>
+              <Label htmlFor="edit-description">Descrição</Label>
               <Textarea
                 id="edit-description"
                 value={formData.description}
@@ -401,7 +401,7 @@ export default function BacklogPage() {
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-priority">Priority</Label>
+                <Label htmlFor="edit-priority">Prioridade</Label>
                 <Input
                   id="edit-priority"
                   type="number"
@@ -411,7 +411,7 @@ export default function BacklogPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-estimation">Estimation (hours)</Label>
+                <Label htmlFor="edit-estimation">Estimativa (horas)</Label>
                 <Input
                   id="edit-estimation"
                   type="number"
@@ -430,16 +430,16 @@ export default function BacklogPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ToDo">To Do</SelectItem>
-                    <SelectItem value="InProgress">In Progress</SelectItem>
-                    <SelectItem value="Done">Done</SelectItem>
+                    <SelectItem value="ToDo">A Fazer</SelectItem>
+                    <SelectItem value="InProgress">Em Progresso</SelectItem>
+                    <SelectItem value="Done">Concluído</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-project">Project</Label>
+                <Label htmlFor="edit-project">Projeto</Label>
                 <Select
                   value={formData.projectId.toString()}
                   onValueChange={(value) => setFormData({ ...formData, projectId: Number.parseInt(value) })}
@@ -459,7 +459,7 @@ export default function BacklogPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-sprint">Sprint (Optional)</Label>
+                <Label htmlFor="edit-sprint">Sprint (Opcional)</Label>
                 <Select
                   value={formData.sprintId?.toString() || "none"}
                   onValueChange={(value) =>
@@ -470,7 +470,7 @@ export default function BacklogPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">No Sprint</SelectItem>
+                    <SelectItem value="none">Sem Sprint</SelectItem>
                     {sprints.map((sprint) => (
                       <SelectItem key={sprint.id} value={sprint.id.toString()}>
                         {sprint.name}
@@ -480,7 +480,7 @@ export default function BacklogPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-assignee">Assignee (Optional)</Label>
+                <Label htmlFor="edit-assignee">Responsável (Opcional)</Label>
                 <Select
                   value={formData.assignedToId?.toString() || "none"}
                   onValueChange={(value) =>
@@ -491,7 +491,7 @@ export default function BacklogPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Unassigned</SelectItem>
+                    <SelectItem value="none">Não atribuído</SelectItem>
                     {users.map((user) => (
                       <SelectItem key={user.id} value={user.id.toString()}>
                         {user.name}
@@ -504,9 +504,9 @@ export default function BacklogPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancel
+              Cancelar
             </Button>
-            <Button onClick={handleEdit}>Save Changes</Button>
+            <Button onClick={handleEdit}>Salvar Alterações</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -514,7 +514,7 @@ export default function BacklogPage() {
       <Dialog open={isCommentDialogOpen} onOpenChange={setIsCommentDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Comments</DialogTitle>
+            <DialogTitle>Comentários</DialogTitle>
             <DialogDescription>{selectedItem?.title}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -531,25 +531,25 @@ export default function BacklogPage() {
                 </div>
               ))}
               {selectedItem?.comments.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-4">No comments yet</p>
+                <p className="text-sm text-muted-foreground text-center py-4">Ainda não há comentários</p>
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="comment">Add Comment</Label>
+              <Label htmlFor="comment">Adicionar Comentário</Label>
               <Textarea
                 id="comment"
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                placeholder="Write a comment..."
+                placeholder="Escreva um comentário..."
                 rows={3}
               />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsCommentDialogOpen(false)}>
-              Close
+              Fechar
             </Button>
-            <Button onClick={handleAddComment}>Add Comment</Button>
+            <Button onClick={handleAddComment}>Adicionar Comentário</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
