@@ -55,8 +55,9 @@ interface AppState {
   addComment: (itemId: number, comment: Omit<Comment, "id">) => void
 
   // Task actions
-  addTask: (task: Omit<Task, "id">) => void
-  updateTask: (id: number, updates: Partial<Task>) => void
+  addTask: (task: Omit<Task, "id">) => Promise<void>
+  updateTask: (id: number, updates: Partial<Task>) => Promise<void>
+  deleteTask: (id: number) => Promise<void>
 
   // Meeting actions
   addMeeting: (meeting: Omit<Meeting, "id">) => Promise<void>
@@ -285,14 +286,22 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   // Task actions
-  addTask: (task) => {
-    const newTask = { ...task, id: Date.now() }
-    set((state) => ({ tasks: [...state.tasks, newTask] }))
+  addTask: async (task) => {
+    const created = (await api.createTask(task)) as unknown as Task
+    set((state) => ({ tasks: [...state.tasks, created] }))
   },
 
-  updateTask: (id, updates) => {
+  updateTask: async (id, updates) => {
+    const updated = (await api.updateTask(id, updates)) as unknown as Task
     set((state) => ({
-      tasks: state.tasks.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+      tasks: state.tasks.map((t) => (t.id === id ? { ...t, ...updated } : t)),
+    }))
+  },
+
+  deleteTask: async (id) => {
+    await api.deleteTask(id)
+    set((state) => ({
+      tasks: state.tasks.filter((t) => t.id !== id),
     }))
   },
 

@@ -96,6 +96,10 @@ export const api = {
 
 	// Tasks
 	getTasks: () => request<Array<unknown>>("/tasks"),
+	createTask: (data: unknown) => request<unknown>("/tasks", { method: "POST", body: JSON.stringify(data) }),
+	updateTask: (id: number, updates: unknown) =>
+		request<unknown>("/tasks", { method: "PUT", body: JSON.stringify({ id, ...(updates as object) }) }),
+	deleteTask: (id: number) => request<void>("/tasks", { method: "DELETE", body: JSON.stringify({ id }) }),
 
 	// Meetings
 	getMeetings: () => request<Array<unknown>>("/meetings"),
