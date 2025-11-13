@@ -93,6 +93,11 @@ CREATE TABLE IF NOT EXISTS sprints (
         ON DELETE CASCADE
 );
 
+-- Campos adicionais para sprints exigidos pelo frontend
+ALTER TABLE sprints
+    ADD COLUMN IF NOT EXISTS goal TEXT NULL,
+    ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'Planned';
+
 -- 9. Itens do Backlog
 CREATE TABLE IF NOT EXISTS itens_backlog (
     id SERIAL PRIMARY KEY,
@@ -103,6 +108,38 @@ CREATE TABLE IF NOT EXISTS itens_backlog (
     CONSTRAINT fk_ib_projeto
         FOREIGN KEY (projeto_id)
         REFERENCES projetos(id)
+        ON DELETE CASCADE
+);
+
+-- Campos adicionais para itens do backlog exigidos pelo frontend
+ALTER TABLE itens_backlog
+    ADD COLUMN IF NOT EXISTS estimativa INT NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'ToDo',
+    ADD COLUMN IF NOT EXISTS sprint_id BIGINT UNSIGNED NULL,
+    ADD COLUMN IF NOT EXISTS assigned_to_id BIGINT UNSIGNED NULL,
+    ADD CONSTRAINT fk_ib_sprint
+        FOREIGN KEY (sprint_id)
+        REFERENCES sprints(id)
+        ON DELETE SET NULL,
+    ADD CONSTRAINT fk_ib_assigned_user
+        FOREIGN KEY (assigned_to_id)
+        REFERENCES usuarios(id)
+        ON DELETE SET NULL;
+
+-- Comentários nos itens do backlog
+CREATE TABLE IF NOT EXISTS comentarios (
+    id SERIAL PRIMARY KEY,
+    item_backlog_id BIGINT UNSIGNED NOT NULL,
+    texto TEXT NOT NULL,
+    usuario_id BIGINT UNSIGNED NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_com_ib
+        FOREIGN KEY (item_backlog_id)
+        REFERENCES itens_backlog(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_com_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
         ON DELETE CASCADE
 );
 
@@ -124,3 +161,43 @@ CREATE TABLE IF NOT EXISTS tarefas (
         REFERENCES membros_dev(usuario_id)
         ON DELETE SET NULL
 );
+
+-- Campo adicional para compatibilidade com o frontend (pontos)
+ALTER TABLE tarefas
+    ADD COLUMN IF NOT EXISTS pontos INT NULL;
+
+-- 11. Reuniões
+CREATE TABLE IF NOT EXISTS reunioes (
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(200) NOT NULL,
+    tipo VARCHAR(50) NOT NULL, -- 'Sprint Planning', 'Daily Standup', etc
+    data_hora DATETIME NOT NULL,
+    duracao_minutos INT NOT NULL,
+    time_id BIGINT UNSIGNED NOT NULL,
+    notas TEXT NULL,
+    CONSTRAINT fk_reuniao_time
+        FOREIGN KEY (time_id)
+        REFERENCES times(id)
+        ON DELETE CASCADE
+);
+
+-- Participantes das reuniões (N:N)
+CREATE TABLE IF NOT EXISTS reunioes_participantes (
+    reuniao_id BIGINT UNSIGNED NOT NULL,
+    usuario_id BIGINT UNSIGNED NOT NULL,
+    PRIMARY KEY (reuniao_id, usuario_id),
+    CONSTRAINT fk_rp_reuniao
+        FOREIGN KEY (reuniao_id)
+        REFERENCES reunioes(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_rp_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
+);
+
+-- Índices úteis
+CREATE INDEX IF NOT EXISTS idx_ib_sprint ON itens_backlog (sprint_id);
+CREATE INDEX IF NOT EXISTS idx_ib_assigned ON itens_backlog (assigned_to_id);
+CREATE INDEX IF NOT EXISTS idx_tarefa_item ON tarefas (item_backlog_id);
+CREATE INDEX IF NOT EXISTS idx_rp_usuario ON reunioes_participantes (usuario_id);

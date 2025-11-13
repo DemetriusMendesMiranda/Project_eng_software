@@ -4,23 +4,49 @@ previews:
   # expireAfterDays: 7
 
 services:
+  # Backend (PHP)
   - type: web
-    name: project-eng-software
+    name: backend-php
     plan: starter
     env: docker
     dockerfilePath: ./Dockerfile
-    # Optional: specify context if not repo root
     dockerContext: .
     autoDeploy: true
-    # Health check for the root path
     healthCheckPath: /
-    # Use smaller instances and a single instance for previews
     previews:
       plan: starter
       numInstances: 1
-    # Add env vars here if needed; you can set different values for previews with previewValue
+    # Set these in Render Dashboard (Settings > Environment)
     # envVars:
-    #   - key: APP_ENV
-    #     value: production
-    #     previewValue: preview
+    #   - key: DB_HOST
+    #     value: your-mysql-host
+    #   - key: DB_PORT
+    #     value: 3306
+    #   - key: DB_NAME
+    #     value: scrum_db
+    #   - key: DB_USER
+    #     value: your-user
+    #   - key: DB_PASS
+    #     value: your-password
+
+  # Frontend (Next.js)
+  - type: web
+    name: frontend-next
+    plan: starter
+    env: node
+    buildCommand: |
+      corepack enable
+      corepack prepare pnpm@8.15.4 --activate
+      pnpm install --frozen-lockfile
+      pnpm build
+    startCommand: pnpm start
+    autoDeploy: true
+    healthCheckPath: /
+    previews:
+      plan: starter
+      numInstances: 1
+    # After the backend is live, set NEXT_PUBLIC_API_BASE_URL to the backend URL
+    # envVars:
+    #   - key: NEXT_PUBLIC_API_BASE_URL
+    #     value: https://backend-php.onrender.com
 
