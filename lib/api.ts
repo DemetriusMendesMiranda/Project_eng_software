@@ -53,6 +53,17 @@ export const api = {
 
 	// Users
 	getUsers: () => request<Array<{ id: number; name: string; email: string; role?: string }>>("/users"),
+	createUser: (data: { name: string; email: string; passwordHash: string; role: string }) =>
+		request<{ id: number; name: string; email: string; role?: string }>("/users", {
+			method: "POST",
+			body: JSON.stringify(data),
+		}),
+	updateUser: (id: number, updates: Partial<{ name: string; email: string; passwordHash: string; role: string }>) =>
+		request<{ id: number; name: string; email: string; role?: string }>("/users", {
+			method: "PUT",
+			body: JSON.stringify({ id, ...updates }),
+		}),
+	deleteUser: (id: number) => request<void>("/users", { method: "DELETE", body: JSON.stringify({ id }) }),
 
 	// Projects
 	getProjects: () => request<Array<unknown>>("/projects"),

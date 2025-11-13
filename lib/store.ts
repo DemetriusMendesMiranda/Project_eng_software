@@ -28,9 +28,9 @@ interface AppState {
   fetchMeetings: () => Promise<void>
 
   // User actions
-  addUser: (user: Omit<User, "id">) => void
-  updateUser: (id: number, updates: Partial<User>) => void
-  deleteUser: (id: number) => void
+  addUser: (user: Omit<User, "id">) => Promise<void>
+  updateUser: (id: number, updates: Partial<User>) => Promise<void>
+  deleteUser: (id: number) => Promise<void>
 
   // Project actions
   addProject: (project: Omit<Project, "id">) => void
@@ -144,19 +144,26 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   // User actions
-  addUser: (user) => {
-    // Defer to backend integration when endpoint is available
-    const newUser = { ...user, id: Date.now() }
-    set((state) => ({ users: [...state.users, newUser] }))
+  addUser: async (user) => {
+    const payload = { name: user.name, email: user.email, passwordHash: user.passwordHash ?? "", role: user.role }
+    const created = (await api.createUser(payload)) as unknown as User
+    set((state) => ({ users: [created, ...state.users] }))
   },
 
-  updateUser: (id, updates) => {
+  updateUser: async (id, updates) => {
+    const payload: any = {}
+    if (updates.name !== undefined) payload.name = updates.name
+    if (updates.email !== undefined) payload.email = updates.email
+    if (updates.passwordHash !== undefined) payload.passwordHash = updates.passwordHash
+    if (updates.role !== undefined) payload.role = updates.role
+    const updated = (await api.updateUser(id, payload)) as unknown as User
     set((state) => ({
-      users: state.users.map((u) => (u.id === id ? { ...u, ...updates } : u)),
+      users: state.users.map((u) => (u.id === id ? { ...u, ...updated } : u)),
     }))
   },
 
-  deleteUser: (id) => {
+  deleteUser: async (id) => {
+    await api.deleteUser(id)
     set((state) => ({ users: state.users.filter((u) => u.id !== id) }))
   },
 
