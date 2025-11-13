@@ -89,10 +89,10 @@ export const api = {
 	getBacklogItems: () => request<Array<unknown>>("/backlog"),
 	createBacklogItem: (data: unknown) => request<unknown>("/backlog", { method: "POST", body: JSON.stringify(data) }),
 	updateBacklogItem: (id: number, updates: unknown) =>
-		request<unknown>(`/backlog/${id}`, { method: "PUT", body: JSON.stringify(updates) }),
-	deleteBacklogItem: (id: number) => request<void>(`/backlog/${id}`, { method: "DELETE" }),
+		request<unknown>("/backlog", { method: "PUT", body: JSON.stringify({ id, ...(updates as object) }) }),
+	deleteBacklogItem: (id: number) => request<void>("/backlog", { method: "DELETE", body: JSON.stringify({ id }) }),
 	addComment: (id: number, data: unknown) =>
-		request<unknown>(`/backlog/${id}/comments`, { method: "POST", body: JSON.stringify(data) }),
+		request<unknown>("/backlog/comments", { method: "POST", body: JSON.stringify({ itemId: id, ...(data as object) }) }),
 
 	// Tasks
 	getTasks: () => request<Array<unknown>>("/tasks"),
