@@ -99,4 +99,10 @@ export const api = {
 
 	// Meetings
 	getMeetings: () => request<Array<unknown>>("/meetings"),
+	createMeeting: (data: unknown) =>
+		request<unknown>("/meetings", { method: "POST", body: JSON.stringify(data) }),
+	updateMeeting: (id: number, updates: unknown) =>
+		request<unknown>("/meetings", { method: "PUT", body: JSON.stringify({ id, ...(updates as object) }) }),
+	deleteMeeting: (id: number) =>
+		request<void>("/meetings", { method: "DELETE", body: JSON.stringify({ id }) }),
 }

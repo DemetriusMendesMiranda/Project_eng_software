@@ -59,9 +59,9 @@ interface AppState {
   updateTask: (id: number, updates: Partial<Task>) => void
 
   // Meeting actions
-  addMeeting: (meeting: Omit<Meeting, "id">) => void
-  updateMeeting: (id: number, updates: Partial<Meeting>) => void
-  deleteMeeting: (id: number) => void
+  addMeeting: (meeting: Omit<Meeting, "id">) => Promise<void>
+  updateMeeting: (id: number, updates: Partial<Meeting>) => Promise<void>
+  deleteMeeting: (id: number) => Promise<void>
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -297,18 +297,20 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   // Meeting actions
-  addMeeting: (meeting) => {
-    const newMeeting = { ...meeting, id: Date.now() }
-    set((state) => ({ meetings: [...state.meetings, newMeeting] }))
+  addMeeting: async (meeting) => {
+    const created = (await api.createMeeting(meeting)) as unknown as Meeting
+    set((state) => ({ meetings: [...state.meetings, created] }))
   },
 
-  updateMeeting: (id, updates) => {
+  updateMeeting: async (id, updates) => {
+    const updated = (await api.updateMeeting(id, updates)) as unknown as Meeting
     set((state) => ({
-      meetings: state.meetings.map((m) => (m.id === id ? { ...m, ...updates } : m)),
+      meetings: state.meetings.map((m) => (m.id === id ? { ...m, ...updated } : m)),
     }))
   },
 
-  deleteMeeting: (id) => {
+  deleteMeeting: async (id) => {
+    await api.deleteMeeting(id)
     set((state) => ({
       meetings: state.meetings.filter((m) => m.id !== id),
     }))
