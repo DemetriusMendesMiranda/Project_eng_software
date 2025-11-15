@@ -12,5 +12,5 @@ RUN docker-php-ext-install pdo pdo_mysql mysqli
 EXPOSE 8080
 
 # Start PHP built-in server binding to Render's $PORT and serving ./public
-CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t public"]
+CMD ["sh", "-c", "php database/migrate.php && php database/seed.php && php -S 0.0.0.0:${PORT:-8080} -t public"]
 
