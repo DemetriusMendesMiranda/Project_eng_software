@@ -57,6 +57,68 @@ try {
         echo "Seeded/updated user: {$email} (id {$id})\n";
     }
 
+    // Ensure a demo team exists
+    $teamName = 'Time Alpha';
+    $stmtTeam = $pdo->prepare('SELECT id FROM times WHERE nome = ? LIMIT 1');
+    $stmtTeam->execute([$teamName]);
+    $teamId = (int)($stmtTeam->fetchColumn() ?: 0);
+    if ($teamId === 0) {
+        $insTeam = $pdo->prepare('INSERT INTO times (nome) VALUES (?)');
+        $insTeam->execute([$teamName]);
+        $teamId = (int)$pdo->lastInsertId();
+        echo "Created team: {$teamName} (id {$teamId})\n";
+    } else {
+        echo "Team already exists: {$teamName} (id {$teamId})\n";
+    }
+
+    // Map user emails to IDs
+    $emailToId = [];
+    $stmtUsers = $pdo->query('SELECT id, email FROM usuarios');
+    foreach ($stmtUsers->fetchAll() as $u) {
+        $emailToId[strtolower((string)$u['email'])] = (int)$u['id'];
+    }
+
+    // Ensure team membership (add Scrum Master, PO, and Dev)
+    $memberEmails = ['john@scrum.com', 'sarah@scrum.com', 'mike@scrum.com'];
+    $existsTU = $pdo->prepare('SELECT 1 FROM times_usuarios WHERE time_id = ? AND usuario_id = ? LIMIT 1');
+    $insTU = $pdo->prepare('INSERT INTO times_usuarios (time_id, usuario_id) VALUES (?, ?)');
+    foreach ($memberEmails as $mEmail) {
+        $uid = $emailToId[strtolower($mEmail)] ?? 0;
+        if ($uid > 0) {
+            $existsTU->execute([$teamId, $uid]);
+            if (!$existsTU->fetchColumn()) {
+                $insTU->execute([$teamId, $uid]);
+                echo "Added user {$mEmail} to team {$teamName}\n";
+            }
+        }
+    }
+
+    // Ensure a demo project exists linking PO, SM, and the team
+    $poId = $emailToId['sarah@scrum.com'] ?? 0;
+    $smId = $emailToId['john@scrum.com'] ?? 0;
+    if ($poId > 0 && $smId > 0 && $teamId > 0) {
+        $projectName = 'Projeto Demo';
+        $chkProj = $pdo->prepare('SELECT id FROM projetos WHERE nome = ? LIMIT 1');
+        $chkProj->execute([$projectName]);
+        $projectId = (int)($chkProj->fetchColumn() ?: 0);
+        if ($projectId === 0) {
+            $insProj = $pdo->prepare('
+                INSERT INTO projetos (nome, descricao, data_inicio, data_fim_prevista, arquivado, product_owner_id, scrum_master_id, time_id)
+                VALUES (?, ?, NULL, NULL, 0, ?, ?, ?)
+            ');
+            $insProj->execute([$projectName, 'Projeto de demonstração', $poId, $smId, $teamId]);
+            $projectId = (int)$pdo->lastInsertId();
+            echo "Created project: {$projectName} (id {$projectId})\n";
+        } else {
+            // Ensure associations are consistent
+            $updProj = $pdo->prepare('UPDATE projetos SET product_owner_id = ?, scrum_master_id = ?, time_id = ? WHERE id = ?');
+            $updProj->execute([$poId, $smId, $teamId, $projectId]);
+            echo "Updated project associations for: {$projectName} (id {$projectId})\n";
+        }
+    } else {
+        echo "Warning: Could not create demo project (missing PO/SM/team IDs)\n";
+    }
+
     echo "Done.\n";
 } catch (Throwable $e) {
     fwrite(STDERR, "Seed error: " . $e->getMessage() . "\n");
