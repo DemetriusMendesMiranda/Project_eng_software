@@ -1,4 +1,4 @@
-# Project_eng_software
+# Scrum Hub
 Projeto de Engenharia de Software
 
 ## Executar localmente (macOS, Linux e Windows)

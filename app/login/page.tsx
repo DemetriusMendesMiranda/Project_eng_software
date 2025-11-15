@@ -43,7 +43,7 @@ export default function LoginPage() {
             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-lg">S</span>
             </div>
-            <span className="text-xl font-bold text-foreground">Scrum Manager</span>
+            <span className="text-xl font-bold text-foreground">Scrum Hub</span>
           </div>
           <CardTitle className="text-2xl font-bold text-foreground">Bem-vindo de volta</CardTitle>
           <CardDescription className="text-muted-foreground">

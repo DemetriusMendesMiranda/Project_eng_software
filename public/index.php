@@ -17,7 +17,7 @@ try {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ENG SOFT - Teste</title>
+    <title>Scrum Hub - Teste</title>
     <style>
       body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 40px; color: #111; }
       .ok { color: #0a7e07; font-weight: 600; }

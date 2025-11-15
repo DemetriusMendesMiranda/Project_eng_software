@@ -79,7 +79,7 @@ export function Sidebar() {
         <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
           <span className="text-primary-foreground font-bold text-lg">S</span>
         </div>
-        <span className="text-lg font-bold text-foreground">Gerenciador Scrum</span>
+        <span className="text-lg font-bold text-foreground">Scrum Hub</span>
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
