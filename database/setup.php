@@ -34,7 +34,12 @@ function applySchema(PDO $pdo, string $schemaPath): void
     );
 
     foreach ($statements as $stmt) {
-        $pdo->exec($stmt);
+        $normalized = ltrim(strtolower($stmt));
+        // Apply only base CREATE statements here; let migrate.php handle ALTER/INDEX variations
+        if (str_starts_with($normalized, 'create table') || str_starts_with($normalized, 'create database')) {
+            $pdo->exec($stmt);
+        }
+        // Skip ALTER TABLE / CREATE INDEX statements here for broad MySQL compatibility
     }
 }
 
