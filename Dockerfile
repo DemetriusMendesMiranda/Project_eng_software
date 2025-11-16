@@ -12,5 +12,5 @@ RUN docker-php-ext-install pdo pdo_mysql mysqli
 EXPOSE 8080
 
 # Start PHP built-in server binding to Render's $PORT and serving ./public
-CMD ["sh", "-c", "if [ \"$RUN_DB_SCRIPTS_ON_BOOT\" = \"true\" ]; then for i in 1 2 3 4 5; do php database/migrate.php && php database/seed.php && break || echo 'DB not ready, retrying in 5s...' && sleep 5; done; fi; php -S 0.0.0.0:${PORT:-8080} -t public"]
+CMD ["sh", "-c", "if [ \"$RUN_DB_SCRIPTS_ON_BOOT\" = \"true\" ]; then for i in 1 2 3 4 5; do php database/setup.php && php database/migrate.php && php database/seed.php && break || echo 'DB not ready, retrying in 5s...' && sleep 5; done; fi; php -S 0.0.0.0:${PORT:-8080} -t public"]
 
